@@ -1,0 +1,39 @@
+<mvc:View controllerName="com.catalog.aispcatalog.controller.App" displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:tnt="sap.tnt">
+    <App id="app">
+        <Page>
+            <customHeader>
+                <tnt:ToolHeader id="shellLikeToolHeaderOnlyMandatoryControls" width="100%">
+                    <Image src="test-resources/sap/tnt/images/SAP_Logo.png" decorative="false" press="onLogoPressed" tooltip="SAP Logo" width="60px" height="30px">
+                        <layoutData>
+                            <OverflowToolbarLayoutData priority="NeverOverflow"/>
+                        </layoutData>
+                    </Image>
+                    <Title text="Product Catalog Management" wrapping="false">
+                        <layoutData>
+                            <OverflowToolbarLayoutData priority="Disappear"/>
+                        </layoutData>
+                    </Title>
+                    <ToolbarSpacer />
+                    <!-- <Avatar src="test-resources/sap/tnt/images/Woman_avatar_01.png" displaySize="XS" press=".onAvatarPressed" tooltip="Profile">
+                        <layoutData>
+                            <OverflowToolbarLayoutData priority="NeverOverflow"/>
+                        </layoutData>
+                    </Avatar> -->
+
+                    <!-- <Button text="Bulk Upload" type="Default" icon="sap-icon://upload" class="sapUiTinyMarginEnd">
+                    </Button> -->
+                    <Button text="Create Catalog Item" type="Emphasized" icon="sap-icon://add" class="sapUiTinyMarginEnd" press="onCreateCatalog">
+                    </Button>
+                </tnt:ToolHeader>
+            </customHeader>
+            <content>
+                <f:FlexibleColumnLayout id="layout" busy="{appView>/busy}" busyIndicatorDelay="{appView>/delay}" layout="{appView>/layout}" backgroundDesign="Translucent" class="sapUiDemoCart" stateChange=".onStateChange">
+                </f:FlexibleColumnLayout>
+            </content>
+        </Page>
+    </App>
+</mvc:View>

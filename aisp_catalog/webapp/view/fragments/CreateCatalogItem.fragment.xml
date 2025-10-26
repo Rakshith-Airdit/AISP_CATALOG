@@ -1,0 +1,92 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified">
+    <Dialog id="addCatalogItemDialog" title="Add Catalog Item" contentWidth="800px" contentHeight="700px" verticalScrolling="true">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <l:Grid defaultSpan="L6 M6 S12" hSpacing="1" vSpacing="0" class="sapUiSmallMarginBottom">
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Product Name" required="true" />
+                        <Input placeholder="Enter product name" width="100%" />
+                    </VBox>
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Commodity Code (UNSPSC)" required="true" />
+                        <ComboBox placeholder="Select commodity code" width="100%">
+                            <core:Item key="43211500" text="43211500 - Office Furniture" />
+                        </ComboBox>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Category" required="true" />
+                        <Input placeholder="Enter category" width="100%" />
+                    </VBox>
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Search Term" required="true" />
+                        <Input placeholder="Enter search keywords" width="100%" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Unit Price" required="true" />
+                        <Input type="Number" value="0" width="100%" />
+                    </VBox>
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Currency" required="true" />
+                        <ComboBox selectedKey="USD" width="100%">
+                            <core:Item key="USD" text="USD" />
+                            <core:Item key="EUR" text="EUR" />
+                        </ComboBox>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Unit of Measure" required="true" />
+                        <ComboBox selectedKey="Each" width="100%">
+                            <core:Item key="Each" text="Each" />
+                            <core:Item key="Set" text="Set" />
+                        </ComboBox>
+                    </VBox>
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Lead Time (Days)" required="true" />
+                        <Input type="Number" value="0" width="100%" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Part Number (Optional)" />
+                        <Input placeholder="Enter part number" width="100%" />
+                    </VBox>
+                    <VBox class="sapUiTinyMarginTopBottom">
+                        <Label text="Additional Link" required="true" />
+                        <Input value="https://example.com" width="100%" />
+                    </VBox>
+                </l:Grid>
+
+                <VBox class="sapUiTinyMarginTopBottom">
+                    <Label text="Product Description" required="true" />
+                    <TextArea id="idProductDescription" rows="4" width="100%" maxLength="500" placeholder="Enter detailed product description" />
+                </VBox>
+
+                <VBox class="sapUiTinyMarginTopBottom">
+                    <Label text="Product Image" required="true" />
+                    <MessageStrip text="JPEG, PNG, max 10MB" type="Information" showIcon="true" />
+                    <u:FileUploader buttonText="Browse" fileType="jpg,png,jpeg" maximumFileSize="10" placeholder="Drag and drop your file here, or click to browse" style="Emphasized" width="250px" />
+                </VBox>
+
+                <VBox class="sapUiTinyMarginTopBottom">
+                    <Label text="Product Specification (PDF)" required="true" />
+                    <MessageStrip text="PDF, max 30MB" type="Information" showIcon="true" />
+                    <u:FileUploader buttonText="Browse" fileType="pdf" maximumFileSize="30" placeholder="Drag and drop your file here, or click to browse" style="Emphasized" width="250px" />
+                </VBox>
+            </VBox>
+        </content>
+
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button type="Reject" text="Cancel" press="onCancelDialog" />
+                    <Button type="Emphasized" text="Add Catalog Item" press="onAddCatalogItem" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</core:FragmentDefinition>

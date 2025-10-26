@@ -1,0 +1,85 @@
+<mvc:View controllerName="com.catalog.aispcatalog.controller.Product"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout">
+    <Page id="productPage" backgroundDesign="Solid">
+        <customHeader>
+            <!-- <Bar><contentLeft><Button type="Back" visible="{appView>/smallScreenMode}" press=".onBack"/></contentLeft><contentMiddle><Title level="H2" text="{Name}"/></contentMiddle><contentRight><Button icon="sap-icon://customer" press=".onAvatarPress" tooltip="{i18n>avatarButtonTooltip}"/><ToggleButton icon="sap-icon://cart" pressed="{= ${appView>/layout}.startsWith('ThreeColumns') }" tooltip="{i18n>toCartButtonTooltip}" press=".onToggleCart"></ToggleButton></contentRight></Bar> -->
+            <Toolbar>
+                <Text text="{Name} - {ProductId}" />
+                <ToolbarSpacer />
+                <Button icon="sap-icon://sys-cancel" press=".onRemoveComparison" tooltip="{i18n>removeFromComparisonTooltip}" />
+            </Toolbar>
+        </customHeader>
+        <content>
+            <l:VerticalLayout class="sapUiContentPadding" width="100%">
+                <HBox alignItems="Start" class="comparebox sapUiMediumMarginBottom sapUiTinyMarginTop" renderType="Bare">
+                    <VBox width="60%" class="sapUiTinyMarginEnd">
+                        <!-- {= !!${productModel>/PictureUrl}} -->
+                        <Image src="{productModel>/PictureUrl}" alt="{i18n>comparisonAlternativeImageText}" densityAware="false" class="product-image-style" width="100%" visible="false">
+                            <detailBox>
+                                <LightBox>
+                                    <imageContent>
+                                        <LightBoxItem imageSrc="{productModel>/PictureUrl}" title="{productModel>/Name}" />
+                                    </imageContent>
+                                </LightBox>
+                            </detailBox>
+                        </Image>
+                        <!-- {= !${productModel>/PictureUrl}} -->
+                        <VBox visible="true" width="100%" alignItems="Start" justifyContent="Center" class="fallback-avatar-container product-image-style fallback-height">
+                            <Avatar initials="{
+                    path: 'productModel>/Category',
+                    formatter: '.formatter.getCategoryInitials'
+                }" displaySize="XL" displayShape="Square" backgroundColor="Accent1" class="sapUiSmallMarginBottom" />
+                        </VBox>
+                    </VBox>
+                    <VBox width="40%" class="sapUiMediumMarginBegin" alignItems="End" justifyContent="Start">
+                        <ObjectNumber class="productPrice sapUiSmallMarginBottom" number="{
+                path: 'productModel>/Price',
+                type: 'sap.ui.model.type.Currency',
+                formatOptions: {showMeasure: false}
+            }" unit="{productModel>/CurrencyCode}" state="Success" emphasized="true" />
+                        <ObjectStatus class="sapUiSmallMarginBottom" text="{
+                path: 'productModel>/Status',
+                formatter: '.formatter.statusText'
+            }" state="{
+                path: 'productModel>/Status',
+                formatter: '.formatter.statusState'
+            }" />
+                        <Text text="Product ID: {productModel>/ProductId}" class="sapUiTinyMarginTop" />
+                    </VBox>
+                </HBox>
+                <form:Form editable="false">
+                    <form:layout>
+                        <form:ResponsiveGridLayout labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" singleContainerFullSize="false" />
+                    </form:layout>
+                    <form:formContainers>
+                        <form:FormContainer>
+                            <form:FormElement label="{i18n>productSupplierAttributeText}">
+                                <form:fields>
+                                    <Text text="{productModel>/SupplierName}" />
+                                </form:fields>
+                            </form:FormElement>
+                            <form:FormElement label="{i18n>productDescriptionAttributeText}">
+                                <form:fields>
+                                    <Text text="{productModel>/ShortDescription}" />
+                                </form:fields>
+                            </form:FormElement>
+                            <form:FormElement label="{i18n>productWeightAttributeText}">
+                                <form:fields>
+                                    <Text text="{productModel>/Weight} {productModel>/WeightUnit}" />
+                                </form:fields>
+                            </form:FormElement>
+                            <form:FormElement label="{i18n>productMeasuresAttributeText}">
+                                <form:fields>
+                                    <Text text="{productModel>/DimensionWidth} {productModel>/Unit}, {productModel>/DimensionDepth} {productModel>/Unit}, {productModel>/DimensionHeight} {productModel>/Unit}" />
+                                </form:fields>
+                            </form:FormElement>
+                        </form:FormContainer>
+                    </form:formContainers>
+                </form:Form>
+            </l:VerticalLayout>
+        </content>
+    </Page>
+</mvc:View>

@@ -1,0 +1,47 @@
+<mvc:View controllerName="com.catalog.aispcatalog.controller.Category"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc">
+    <Page id="categoryPage" title="{/CategoryName}" backgroundDesign="Solid" showNavButton="true" navButtonPress="onBack">
+        <!-- <headerContent>
+            <Button id="masterListFilterButton" icon="sap-icon://filter" press=".onFilter" />
+        </headerContent> -->
+        <content>
+            <!-- sorter: {
+                        path: 'categoryModel>ProductName',
+                        descending: false
+                    } -->
+            <List id="categoryProductList" mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}" noDataText="{i18n>categoryNoData}" busyIndicatorDelay="0" selectionChange=".onProductDetails" items="{
+                    path: 'categoryModel>/Products'
+                    
+                }">
+                <infoToolbar>
+                    <Toolbar id="categoryInfoToolbar" visible="false">
+                        <content>
+                            <Title id="categoryInfoToolbarTitle" />
+                        </content>
+                    </Toolbar>
+                </infoToolbar>
+                <!-- press=".onProductDetails" -->
+                <items>
+                    <ObjectListItem type="{= ${device>/system/phone} ? 'Active' : 'Inactive'}" icon="sap-icon://card" title="{categoryModel>ProductName}" number="{
+                            path: 'categoryModel>UnitPrice',
+                            formatter: '.formatter.price'
+                        }" numberUnit="{categoryModel>CurrencyCode}" iconDensityAware="false" tooltip="{i18n>openProductDetails} {categoryModel>ProductName}">
+                        <attributes>
+                            <ObjectAttribute visible="true" text="{categoryModel>SupplierName}" />
+                        </attributes>
+                        <firstStatus>
+                            <ObjectStatus text="{
+                                    path: 'categoryModel>Status',
+                                    formatter: '.formatter.statusText'
+                                }" state="{
+                                    path: 'categoryModel>Status',
+                                    formatter: '.formatter.statusState'
+                                }" />
+                        </firstStatus>
+                    </ObjectListItem>
+                </items>
+            </List>
+        </content>
+    </Page>
+</mvc:View>

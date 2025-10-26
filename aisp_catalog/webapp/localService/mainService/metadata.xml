@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="CatalogService" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityContainer Name="EntityContainer" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="ProductCatalogItems" EntityType="CatalogService.ProductCatalogItems"/>
+                <EntitySet Name="ProductCatalogCommodityCodes" EntityType="CatalogService.ProductCatalogCommodityCodes"/>
+                <EntitySet Name="Currencies" EntityType="CatalogService.Currencies"/>
+                <EntitySet Name="UnitsOfMeasure" EntityType="CatalogService.UnitsOfMeasure"/>
+            </EntityContainer>
+            <EntityType Name="ProductCatalogItems">
+                <Key>
+                    <PropertyRef Name="ProductId"/>
+                </Key>
+                <Property Name="ProductId" Type="Edm.String" Nullable="false" sap:label="Product ID" sap:quickinfo="Unique identifier for the product"/>
+                <Property Name="ProductName" Type="Edm.String" MaxLength="100" sap:label="Product Name" sap:quickinfo="Name of the product"/>
+                <Property Name="CommodityCode" Type="Edm.Int32" sap:label="Commodity Code" sap:quickinfo="UNSPSC commodity classification code"/>
+                <Property Name="Category" Type="Edm.String" MaxLength="20" sap:label="Category" sap:quickinfo="UNSPSC commodity classification code"/>
+                <Property Name="SearchTerm" Type="Collection(Edm.String)" Nullable="false" sap:label="Search Term" sap:quickinfo="Keywords for product search"/>
+                <Property Name="UnitPrice" Type="Edm.Decimal" Precision="15" Scale="2" sap:label="Unit Price" sap:quickinfo="Price per unit of the product"/>
+                <Property Name="CurrencyCode" Type="Edm.String" MaxLength="3" sap:label="Currency Code" sap:quickinfo="Currency code for pricing"/>
+                <Property Name="UnitOfMeasure" Type="Edm.String" MaxLength="10" sap:label="Unit of Measure" sap:quickinfo="Measurement unit for the product"/>
+                <Property Name="LeadTimeDays" Type="Edm.Int32" sap:label="Lead Time" sap:quickinfo="Delivery lead time in days"/>
+                <Property Name="PartNumber" Type="Edm.String" MaxLength="50" sap:label="Part Number" sap:quickinfo="Manufacturer part number"/>
+                <Property Name="AdditionalLink" Type="Edm.String" MaxLength="500" sap:label="Additional Link" sap:quickinfo="URL for additional product information"/>
+                <Property Name="ProductDescription" Type="Edm.String" MaxLength="500" sap:label="Product Description" sap:quickinfo="Detailed description of the product"/>
+                <Property Name="ProductImage" Type="Edm.String" sap:label="Product Image" sap:quickinfo="Product image file"/>
+                <Property Name="ProductSpecification" Type="Edm.String" sap:label="Product Specification" sap:quickinfo="PDF specification document"/>
+                <Property Name="CreatedAt" Type="Edm.DateTimeOffset" sap:label="Created At" sap:quickinfo="Timestamp when record was created"/>
+                <Property Name="CreatedBy" Type="Edm.String" MaxLength="50" sap:label="Created By" sap:quickinfo="User who created the record"/>
+                <Property Name="ModifiedAt" Type="Edm.DateTimeOffset" sap:label="Modified At" sap:quickinfo="Timestamp when record was last modified"/>
+                <Property Name="ModifiedBy" Type="Edm.String" MaxLength="50" sap:label="Modified By" sap:quickinfo="User who last modified the record"/>
+            </EntityType>
+            <EntityType Name="ProductCatalogCommodityCodes">
+                <Key>
+                    <PropertyRef Name="Commodity"/>
+                </Key>
+                <Property Name="Commodity" Type="Edm.String" MaxLength="20" Nullable="false" sap:label="Commodity Code" sap:quickinfo="UNSPSC commodity code"/>
+                <Property Name="CommodityName" Type="Edm.String" MaxLength="100" sap:label="Description" sap:quickinfo="Commodity code description"/>
+                <Property Name="NumberOfProducts" Type="Edm.Int32" sap:label="Number of Products" sap:quickinfo="Total number of products in this category"/>
+            </EntityType>
+            <EntityType Name="Currencies">
+                <Key>
+                    <PropertyRef Name="WAERS"/>
+                </Key>
+                <Property Name="WAERS" Type="Edm.String" MaxLength="3" Nullable="false" sap:Label="Currency Code" sap:QuickInfo="Unique identifier for the currency (ISO 4217 or custom code)"/>
+                <Property Name="LTEXT" Type="Edm.String" MaxLength="100" sap:Label="Long Description" sap:QuickInfo="Complete descriptive name of the currency with additional context"/>
+                <Property Name="KTEXT" Type="Edm.String" MaxLength="50" sap:Label="Short Description" sap:QuickInfo="Abbreviated name or symbol representation of the currency"/>
+            </EntityType>
+            <EntityType Name="UnitsOfMeasure">
+                <Key>
+                    <PropertyRef Name="UnitCode"/>
+                </Key>
+                <Property Name="UnitCode" Type="Edm.String" MaxLength="3" Nullable="false" sap:label="Internal UoM" sap:semantics="unit-of-measure"/>
+                <Property Name="ISOCode" Type="Edm.String" MaxLength="3" Nullable="false" sap:label="ISO code"/>
+                <Property Name="ExternalCode" Type="Edm.String" MaxLength="3" Nullable="false" sap:label="Commercial"/>
+                <Property Name="Text" Type="Edm.String" MaxLength="30" Nullable="false" sap:label="Measurement Unit Txt"/>
+                <Property Name="DecimalPlaces" Type="Edm.Int32" sap:label="Decimal Places"/>
+            </EntityType>
+            <Annotations Target="CatalogService.ProductCatalogItems/ProductId" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
