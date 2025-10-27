@@ -34,6 +34,10 @@ sap.ui.define(
         this._router
           .getRoute("RouteHome")
           .attachMatched(this._onRouteMatched, this);
+
+        this._router
+          .getRoute("catalogReview")
+          .attachMatched(this._onRouteMatched, this);
       },
 
       _setModel: function (sName, oData) {

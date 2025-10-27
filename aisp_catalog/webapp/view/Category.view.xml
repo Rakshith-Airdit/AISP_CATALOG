@@ -28,7 +28,7 @@
                             formatter: '.formatter.price'
                         }" numberUnit="{categoryModel>CurrencyCode}" iconDensityAware="false" tooltip="{i18n>openProductDetails} {categoryModel>ProductName}">
                         <attributes>
-                            <ObjectAttribute visible="true" text="{categoryModel>SupplierName}" />
+                            <ObjectAttribute visible="true" text="{categoryModel>PartNumber}" />
                         </attributes>
                         <firstStatus>
                             <ObjectStatus text="{

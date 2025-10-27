@@ -32,7 +32,7 @@ sap.ui.define(
         const oModel = this.getOwnerComponent().getModel();
         const aFilters = [
           new sap.ui.model.Filter(
-            "Category",
+            "CommodityCode",
             sap.ui.model.FilterOperator.EQ,
             sCategoryId
           ),
@@ -84,29 +84,29 @@ sap.ui.define(
         // Extract category from current binding context or route
         const oContext = this.getView().getBindingContext("productModel");
         if (oContext) {
-          return oContext.getProperty("Category");
+          return oContext.getProperty("CommodityCode");
         }
         return "";
       },
 
-      onAvatarPress: function () {
-        MessageToast.show("User profile clicked");
-        // Implement user profile functionality
-      },
+      // onAvatarPress: function () {
+      //   MessageToast.show("User profile clicked");
+      //   // Implement user profile functionality
+      // },
 
-      onToggleCart: function (oEvent) {
-        const bPressed = oEvent.getParameter("pressed");
-        MessageToast.show("Cart " + (bPressed ? "opened" : "closed"));
-        // Implement cart toggle functionality
-      },
+      // onToggleCart: function (oEvent) {
+      //   const bPressed = oEvent.getParameter("pressed");
+      //   MessageToast.show("Cart " + (bPressed ? "opened" : "closed"));
+      //   // Implement cart toggle functionality
+      // },
 
-      onAddToCart: function () {
-        const oProduct = this.getView().getModel("productModel").getData();
-        MessageToast.show("Added " + oProduct.Name + " to cart");
+      // onAddToCart: function () {
+      //   const oProduct = this.getView().getModel("productModel").getData();
+      //   MessageToast.show("Added " + oProduct.Name + " to cart");
 
-        // Implement add to cart logic here
-        // You might want to update a cart model or call a service
-      },
+      //   // Implement add to cart logic here
+      //   // You might want to update a cart model or call a service
+      // },
 
       /**
        * Formatter functions

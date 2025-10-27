@@ -16,28 +16,32 @@ sap.ui.define(
         // Initialize view model for products and currency
         const oViewModel = new JSONModel({
           AllProducts: [],
-          Currency: "EUR",
+          Currency: "INR",
         });
         this.getView().setModel(oViewModel, "view");
 
         // Initialize cart model if it doesn't exist at component level
-        this._initializeCartModel();
+        // this._initializeCartModel();
 
         this.getRouter().attachRouteMatched(this._onRouteMatched, this);
+
+        this.getRouter()
+          .getRoute("catalogReview")
+          .attachMatched(this._onRouteMatched, this);
       },
 
-      _initializeCartModel: function () {
-        const oComponent = this.getOwnerComponent();
-        if (!oComponent.getModel("cart")) {
-          // Create cart model at component level so it persists across routes
-          const oCartModel = new JSONModel({
-            items: [],
-            totalItems: 0,
-            totalPrice: 0,
-          });
-          oComponent.setModel(oCartModel, "cart");
-        }
-      },
+      // _initializeCartModel: function () {
+      //   const oComponent = this.getOwnerComponent();
+      //   if (!oComponent.getModel("cart")) {
+      //     // Create cart model at component level so it persists across routes
+      //     const oCartModel = new JSONModel({
+      //       items: [],
+      //       totalItems: 0,
+      //       totalPrice: 0,
+      //     });
+      //     oComponent.setModel(oCartModel, "cart");
+      //   }
+      // },
 
       _onRouteMatched: function (oEvent) {
         const sRouteName = oEvent.getParameter("name");
@@ -74,7 +78,7 @@ sap.ui.define(
         const oContext = oEvent.getSource().getBindingContext("view");
         if (oContext) {
           const oProduct = oContext.getObject();
-          const sCategoryId = oProduct.Category;
+          const sCategoryId = oProduct.CommodityCode;
           const sProductId = oProduct.ProductId || oProduct.ID;
 
           this.getRouter().navTo("RouteProduct", {
@@ -89,63 +93,63 @@ sap.ui.define(
         this.onBack();
       },
 
-      onAddToCart: function (oEvent) {
-        const oButton = oEvent.getSource();
-        const oContext = oButton.getBindingContext("view");
+      // onAddToCart: function (oEvent) {
+      //   const oButton = oEvent.getSource();
+      //   const oContext = oButton.getBindingContext("view");
 
-        if (oContext) {
-          const oProduct = oContext.getObject();
-          this._addProductToCart(oProduct);
-        }
-      },
+      //   if (oContext) {
+      //     const oProduct = oContext.getObject();
+      //     this._addProductToCart(oProduct);
+      //   }
+      // },
 
-      _addProductToCart: function (oProduct) {
-        const oCartModel = this.getOwnerComponent().getModel("cart");
-        const aCartItems = oCartModel.getProperty("/items");
+      // _addProductToCart: function (oProduct) {
+      //   const oCartModel = this.getOwnerComponent().getModel("cart");
+      //   const aCartItems = oCartModel.getProperty("/items");
 
-        // Check if product already exists in cart
-        const existingItemIndex = aCartItems.findIndex(
-          (item) =>
-            item.ProductId === oProduct.ProductId || item.ID === oProduct.ID
-        );
+      //   // Check if product already exists in cart
+      //   const existingItemIndex = aCartItems.findIndex(
+      //     (item) =>
+      //       item.ProductId === oProduct.ProductId || item.ID === oProduct.ID
+      //   );
 
-        if (existingItemIndex >= 0) {
-          // Increase quantity if product already in cart
-          aCartItems[existingItemIndex].quantity += 1;
-        } else {
-          // Add new item to cart
-          aCartItems.push({
-            ProductId: oProduct.ProductId || oProduct.ID,
-            Name: oProduct.Name,
-            Price: oProduct.Price,
-            PictureUrl: oProduct.PictureUrl,
-            Category: oProduct.Category,
-            quantity: 1,
-          });
-        }
+      //   if (existingItemIndex >= 0) {
+      //     // Increase quantity if product already in cart
+      //     aCartItems[existingItemIndex].quantity += 1;
+      //   } else {
+      //     // Add new item to cart
+      //     aCartItems.push({
+      //       ProductId: oProduct.ProductId || oProduct.ID,
+      //       Name: oProduct.Name,
+      //       Price: oProduct.Price,
+      //       PictureUrl: oProduct.PictureUrl,
+      //       Category: oProduct.Category,
+      //       quantity: 1,
+      //     });
+      //   }
 
-        // Update cart totals
-        this._updateCartTotals(aCartItems);
+      //   // Update cart totals
+      //   this._updateCartTotals(aCartItems);
 
-        // Show confirmation message
-        sap.m.MessageToast.show(`Added ${oProduct.Name} to cart`);
-      },
+      //   // Show confirmation message
+      //   sap.m.MessageToast.show(`Added ${oProduct.Name} to cart`);
+      // },
 
-      _updateCartTotals: function (aCartItems) {
-        const oCartModel = this.getOwnerComponent().getModel("cart");
-        const iTotalItems = aCartItems.reduce(
-          (total, item) => total + item.quantity,
-          0
-        );
-        const fTotalPrice = aCartItems.reduce(
-          (total, item) => total + item.Price * item.quantity,
-          0
-        );
+      // _updateCartTotals: function (aCartItems) {
+      //   const oCartModel = this.getOwnerComponent().getModel("cart");
+      //   const iTotalItems = aCartItems.reduce(
+      //     (total, item) => total + item.quantity,
+      //     0
+      //   );
+      //   const fTotalPrice = aCartItems.reduce(
+      //     (total, item) => total + item.Price * item.quantity,
+      //     0
+      //   );
 
-        oCartModel.setProperty("/totalItems", iTotalItems);
-        oCartModel.setProperty("/totalPrice", fTotalPrice.toFixed(2));
-        oCartModel.setProperty("/items", aCartItems);
-      },
+      //   oCartModel.setProperty("/totalItems", iTotalItems);
+      //   oCartModel.setProperty("/totalPrice", fTotalPrice.toFixed(2));
+      //   oCartModel.setProperty("/items", aCartItems);
+      // },
 
       // onToggleCart: function (oEvent) {
       //   const bPressed = oEvent.getParameter("pressed");
@@ -159,9 +163,9 @@ sap.ui.define(
       //   }
       // },
 
-      onAvatarPress: function () {
-        sap.m.MessageToast.show("User profile pressed");
-      },
+      // onAvatarPress: function () {
+      //   sap.m.MessageToast.show("User profile pressed");
+      // },
     });
   }
 );

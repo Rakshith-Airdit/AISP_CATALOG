@@ -1,100 +1,62 @@
-<mvc:View xmlns:cssgrid="sap.ui.layout.cssgrid"
-    xmlns:cards="sap.f.cards" controllerName="com.catalog.aispcatalog.controller.Welcome"
+<mvc:View controllerName="com.catalog.aispcatalog.controller.Welcome"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:f="sap.f"
     xmlns:l="sap.ui.layout"
-    xmlns:core="sap.ui.core"
-    xmlns:grid="sap.ui.layout.cssgrid" core:require="{CurrencyType: 'sap/ui/model/type/Currency'}">
-    <Page id="welcomePage" title="{i18n>title}" showHeader="false">
+    xmlns:grid="sap.ui.layout.cssgrid"
+    xmlns:core="sap.ui.core" core:require="{CurrencyType: 'sap/ui/model/type/Currency'}">
+
+    <Page id="welcomePage" title="{i18n>title}" showHeader="false" enableScrolling="true">
         <content>
-            <!-- Welcome Header -->
-            <!-- <Bar>
-                <contentMiddle>
-                    <Title text="{i18n>welcomeHeadline}" level="H1" />
-                </contentMiddle>
-                <contentRight>
-                    <Button icon="sap-icon://customer" press=".onAvatarPress" type="Transparent" />
-                    <ToggleButton icon="sap-icon://cart" pressed="{= ${appView>/layout}.startsWith('ThreeColumns') }" press=".onToggleCart" type="Transparent" />
-                </contentRight>
-            </Bar> -->
-            <!-- All Products Section -->
-            <Panel>
+            <Panel height="100%">
                 <headerToolbar>
-                    <Toolbar>
+                    <OverflowToolbar>
                         <Title text="{i18n>allProductsTitle}" level="H2" />
                         <ToolbarSpacer />
-                        <Text text="Total: {view>/AllProducts/length} products" />
-                    </Toolbar>
+                        <Text text="Total: {view>/AllProducts/length} products" visible="{= !!${view>/AllProducts/length}}" class="sapUiTinyMarginEnd" />
+                    </OverflowToolbar>
                 </headerToolbar>
 
-                <!-- No Data State -->
-                <IllustratedMessage id="noDataMessage" visible="{= !${view>/AllProducts/length}}" title="{i18n>noProductsAvailable}" description="{i18n>noProductsDescription}" illustrationType="sapIllus-NoData" illustrationSize="Auto" class="sapUiLargeMargin">
-                    <!-- <additionalContent>
-                        <Button text="{i18n>refresh}" icon="sap-icon://refresh" press=".onRefresh" type="Emphasized" />
-                    </additionalContent> -->
-                </IllustratedMessage>
+                <!-- Illustrated Message that takes full available height -->
+                <VBox height="100%" justifyContent="Center" alignItems="Center" visible="{= !${view>/AllProducts/length}}">
+                    <IllustratedMessage id="noDataMessage" title="{i18n>noProductsAvailable}" description="{i18n>noProductsDescription}" illustrationType="sapIllus-NoData" illustrationSize="Auto" />
+                </VBox>
 
-
-                <f:GridList id="productGrid" items="{view>/AllProducts}" itemPress="onProductItemPress" mode="None" width="100%" visible="{= !!${view>/AllProducts/length}}">
+                <!-- Products Grid -->
+                <!-- Products Grid -->
+                <f:GridList id="productGrid" items="{view>/AllProducts}" mode="None" width="100%" visible="{= !!${view>/AllProducts/length}}" class="sapUiSmallMarginTop">
                     <f:customLayout>
-                        <grid:GridBoxLayout boxWidth="19.5rem" />
+                        <grid:GridBoxLayout boxMinWidth="18rem"  />
                     </f:customLayout>
 
-                    <f:GridListItem type="Active" class="sapUiSmallMargin" press="onSelectProduct">
-                        <VBox height="100%" class="sapUiSmallMargin sapUiContentPadding tile-shadow-style" justifyContent="SpaceAround">
-                            <layoutData>
-                                <FlexItemData growFactor="1" shrinkFactor="0" />
-                            </layoutData>
-
-                            <!-- Top Content -->
-                            <VBox>
-                                <!-- Product Image - Top Section -->
-                                <HBox justifyContent="Center" class="sapUiSmallMarginBottom">
-                                    <Avatar src="{view>PictureUrl}" initials="{view>Category}" displaySize="L" displayShape="Square" press=".onSelectProduct" visible="true" backgroundColor="Accent1" imageFitType="Contain" class="sapUiTinyMargin product-image-tile" />
-                                </HBox>
-
-                                <!-- Product Title -->
-                                <Title text="{view>Name}" level="H3" wrapping="true" class="sapUiTinyMarginBottom" textAlign="Center" />
-
-                                <!-- Product Description -->
-                                <Text text="{view>ShortDescription}" wrapping="true" class="sapUiSmallMarginBottom" textAlign="Center" maxLines="3" />
-
-                                <!-- Pricing Section -->
-                                <VBox class="sapUiSmallMarginTop sapUiSmallMarginBottom">
-                                    <HBox justifyContent="SpaceBetween" alignItems="Center">
-                                        <VBox>
-                                            <Label text="Unit Price" design="Bold" class="sapUiTinyMarginBottom" />
-                                            <Text text="Per Each" />
-                                        </VBox>
-                                        <ObjectNumber number="{
-                                parts: [
-                                    {path: 'view>Price'},
-                                    {path: 'view>CurrencyCode'}
-                                ],
-                                type: 'sap.ui.model.type.Currency',
-                                formatOptions: {showMeasure: false}
-                            }" unit="{view>CurrencyCode}" state="Success" emphasized="true" />
+                    <f:GridListItem type="Active" press="onSelectProduct">
+                        <f:Card class="sapUiContentPadding" height="100%">
+                            <f:content>
+                                <VBox class="sapUiSmallMargin" height="100%" width="100%">
+                                    <Image src="{view>ProductImage}" alt="{view>ProductName}" width="100%" height="10rem" class="sapUiSmallMarginBottom" />
+                                    <core:HTML content="&lt;hr style='border-top: 1px solid #e0e0e0;'&gt;" />
+                                    <Title text="{view>ProductName}" level="H3" wrapping="true" class="sapUiSmallMarginBottom" />
+                                    <ObjectStatus text="{view>Category}" state="Success" class="sapUiTinyMarginBottom" />
+                                    <Text text="{view>ProductDescription}" wrapping="true" class="sapUiSmallMarginBottom" maxLines="3" />
+                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                                        <Text text="Unit Price" />
+                                        <ObjectNumber number="{path: 'view>UnitPrice', type: 'sap.ui.model.type.Float', formatOptions: { minFractionDigits: 2, maxFractionDigits: 2 }}" unit="{view>CurrencyCode}" state="Success" emphasized="true" />
                                     </HBox>
-                                </VBox>
-
-                                <!-- Product Codes -->
-                                <VBox>
-                                    <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
-                                        <Label text="Code:" design="Bold" />
-                                        <Text text="{view>ProductId}" />
+                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                                        <Text text="Per Each" />
+                                        <Text text="{view>UnitOfMeasure}" />
+                                    </HBox>
+                                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                                        <Text text="Code:" />
+                                        <Text text="{view>CommodityCode}" />
                                     </HBox>
                                     <HBox justifyContent="SpaceBetween">
-                                        <Label text="Part #:" design="Bold" />
-                                        <Text text="{view>ProductId}" />
+                                        <Text text="Part #:" />
+                                        <Text text="{view>PartNumber}" />
                                     </HBox>
                                 </VBox>
-
-                                <!-- Add to Cart Button - Always at bottom -->
-                                <!-- <Button text="Add to Cart" icon="sap-icon://cart-3" type="Emphasized" press=".onAddToCart" width="100%" class="sapUiSmallMarginTopBottom"/> -->
-                            </VBox>
-
-                        </VBox>
+                            </f:content>
+                        </f:Card>
                     </f:GridListItem>
                 </f:GridList>
             </Panel>

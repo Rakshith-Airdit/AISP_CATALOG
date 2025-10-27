@@ -5,76 +5,97 @@
     <Dialog id="addCatalogItemDialog" title="Add Catalog Item" contentWidth="800px" contentHeight="700px" verticalScrolling="true">
         <content>
             <VBox class="sapUiSmallMargin">
-                <l:Grid defaultSpan="L6 M6 S12" hSpacing="1" vSpacing="0" class="sapUiSmallMarginBottom">
-                    <VBox class="sapUiTinyMarginTopBottom">
+                <Title text="Product Details" level="H2" class="sapUiSmallMarginBottom" />
+
+                <l:Grid defaultSpan="L6 M6 S12" class="sapUiSmallMarginBottom">
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Product Name" required="true" />
-                        <Input placeholder="Enter product name" width="100%" />
+                        <Input value="{form>/productName}" placeholder="Enter product name" width="100%" />
                     </VBox>
-                    <VBox class="sapUiTinyMarginTopBottom">
+
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Commodity Code (UNSPSC)" required="true" />
-                        <ComboBox placeholder="Select commodity code" width="100%">
-                            <core:Item key="43211500" text="43211500 - Office Furniture" />
+                        <ComboBox items="{appView>/commodityCodes}" selectedKey="{form>/commodityCode}" change="onCommodityCodeChange" placeholder="Select commodity code" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
                         </ComboBox>
                     </VBox>
 
-                    <VBox class="sapUiTinyMarginTopBottom">
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Category" required="true" />
-                        <Input placeholder="Enter category" width="100%" />
+                        <Input value="{form>/category}" placeholder="Category will be auto-filled" width="100%" enabled="false" />
                     </VBox>
-                    <VBox class="sapUiTinyMarginTopBottom">
+
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Search Term" required="true" />
-                        <Input placeholder="Enter search keywords" width="100%" />
+                        <MultiInput id="searchTermsInput" showValueHelp="false" showSuggestion="false" change="onSearchTermChange" width="100%" placeholder="Enter search keywords (press Enter or Comma after each)" tokens="{path: 'form>/searchTerms'}" tokenUpdate="onSearchTermTokenUpdate">
+                            <tokens>
+                                <Token key="{form>}" text="{form>}" />
+                            </tokens>
+                        </MultiInput>
                     </VBox>
 
-                    <VBox class="sapUiTinyMarginTopBottom">
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Unit Price" required="true" />
-                        <Input type="Number" value="0" width="100%" />
+                        <Input type="Number" value="{form>/unitPrice}" placeholder="Enter unit price" width="100%" />
                     </VBox>
-                    <VBox class="sapUiTinyMarginTopBottom">
+
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Currency" required="true" />
-                        <ComboBox selectedKey="USD" width="100%">
-                            <core:Item key="USD" text="USD" />
-                            <core:Item key="EUR" text="EUR" />
+                        <ComboBox items="{appView>/currencies}" selectedKey="{form>/currency}" placeholder="Select currency" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
                         </ComboBox>
                     </VBox>
 
-                    <VBox class="sapUiTinyMarginTopBottom">
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Unit of Measure" required="true" />
-                        <ComboBox selectedKey="Each" width="100%">
-                            <core:Item key="Each" text="Each" />
-                            <core:Item key="Set" text="Set" />
+                        <ComboBox items="{appView>/unitsOfMeasure}" selectedKey="{form>/unitOfMeasure}" placeholder="Select unit of measure" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
                         </ComboBox>
                     </VBox>
-                    <VBox class="sapUiTinyMarginTopBottom">
+
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Lead Time (Days)" required="true" />
-                        <Input type="Number" value="0" width="100%" />
+                        <Input type="Number" value="{form>/leadTime}" placeholder="Enter lead time in days" width="100%" />
                     </VBox>
 
-                    <VBox class="sapUiTinyMarginTopBottom">
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Part Number (Optional)" />
-                        <Input placeholder="Enter part number" width="100%" />
+                        <Input value="{form>/partNumber}" placeholder="Enter part number" width="100%" />
                     </VBox>
-                    <VBox class="sapUiTinyMarginTopBottom">
+
+                    <VBox class="sapUiTinyMarginBottom">
                         <Label text="Additional Link" required="true" />
-                        <Input value="https://example.com" width="100%" />
+                        <Input value="{form>/additionalLink}" placeholder="Enter product URL" width="100%" />
                     </VBox>
                 </l:Grid>
 
-                <VBox class="sapUiTinyMarginTopBottom">
+                <VBox class="sapUiTinyMarginBottom">
                     <Label text="Product Description" required="true" />
-                    <TextArea id="idProductDescription" rows="4" width="100%" maxLength="500" placeholder="Enter detailed product description" />
+                    <TextArea value="{form>/productDescription}" rows="3" width="100%" maxLength="500" placeholder="Enter detailed product description" />
                 </VBox>
 
-                <VBox class="sapUiTinyMarginTopBottom">
+                <!-- Product Image Section -->
+                <VBox class="sapUiTinyMarginBottom">
                     <Label text="Product Image" required="true" />
-                    <MessageStrip text="JPEG, PNG, max 10MB" type="Information" showIcon="true" />
-                    <u:FileUploader buttonText="Browse" fileType="jpg,png,jpeg" maximumFileSize="10" placeholder="Drag and drop your file here, or click to browse" style="Emphasized" width="250px" />
+                    <MessageStrip text="JPEG, PNG, max 5MB" type="Information" showIcon="true" class="sapUiTinyMarginBottom" />
+                    <HBox alignItems="Center">
+                        <u:FileUploader id="productImageUploader" buttonText="Browse" fileType="jpg,png,jpeg" maximumFileSize="5" placeholder="Drag and drop image file" style="Emphasized" width="250px" change="onImageFileChange" />
+                        <Button id="previewImageButton" text="Preview" icon="sap-icon://picture" type="Transparent" press="onPreviewImage" enabled="false" class="sapUiSmallMarginBegin" />
+                        <Button id="removeImageButton" icon="sap-icon://sys-cancel" type="Transparent" press="onRemoveImage" enabled="{= !!${form>/selectedImageFile}}" tooltip="Remove Image" />
+                    </HBox>
+                    <Text id="imageFileName" text="" class="sapUiTinyMarginTop" />
                 </VBox>
 
-                <VBox class="sapUiTinyMarginTopBottom">
+                <!-- Product Specification Section -->
+                <VBox class="sapUiTinyMarginBottom">
                     <Label text="Product Specification (PDF)" required="true" />
-                    <MessageStrip text="PDF, max 30MB" type="Information" showIcon="true" />
-                    <u:FileUploader buttonText="Browse" fileType="pdf" maximumFileSize="30" placeholder="Drag and drop your file here, or click to browse" style="Emphasized" width="250px" />
+                    <MessageStrip text="PDF, max 5MB" type="Information" showIcon="true" class="sapUiTinyMarginBottom" />
+                    <HBox alignItems="Center">
+                        <u:FileUploader id="productSpecUploader" buttonText="Browse" fileType="pdf" maximumFileSize="5" placeholder="Drag and drop PDF file" style="Emphasized" width="250px" change="onPdfFileChange" />
+                        <Button id="previewPdfButton" text="Preview" icon="sap-icon://pdf-attachment" type="Transparent" press="onPreviewPdf" enabled="false" class="sapUiSmallMarginBegin" />
+                        <Button id="removePdfButton" icon="sap-icon://sys-cancel" type="Transparent" press="onRemovePdf" enabled="{= !!${form>/selectedPdfFile}}" tooltip="Remove PDF" />
+                    </HBox>
+                    <Text id="pdfFileName" text="" class="sapUiTinyMarginTop" />
                 </VBox>
             </VBox>
         </content>
@@ -82,9 +103,10 @@
         <footer>
             <Toolbar>
                 <content>
-                    <ToolbarSpacer />
                     <Button type="Reject" text="Cancel" press="onCancelDialog" />
-                    <Button type="Emphasized" text="Add Catalog Item" press="onAddCatalogItem" />
+                    <ToolbarSpacer />
+                    <Text text="Items in Catalog: {form>/addedItems/length}" class="sapUiTinyMarginEnd" />
+                    <Button type="Emphasized" text="Add to Catalog &amp; View" press="onAddAndViewCatalog" />
                 </content>
             </Toolbar>
         </footer>

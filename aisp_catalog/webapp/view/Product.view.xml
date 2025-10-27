@@ -3,82 +3,72 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:form="sap.ui.layout.form"
     xmlns:l="sap.ui.layout">
-    <Page id="productPage" backgroundDesign="Solid">
-        <customHeader>
-            <!-- <Bar><contentLeft><Button type="Back" visible="{appView>/smallScreenMode}" press=".onBack"/></contentLeft><contentMiddle><Title level="H2" text="{Name}"/></contentMiddle><contentRight><Button icon="sap-icon://customer" press=".onAvatarPress" tooltip="{i18n>avatarButtonTooltip}"/><ToggleButton icon="sap-icon://cart" pressed="{= ${appView>/layout}.startsWith('ThreeColumns') }" tooltip="{i18n>toCartButtonTooltip}" press=".onToggleCart"></ToggleButton></contentRight></Bar> -->
+    <Page id="productPage" backgroundDesign="Solid" title="{productModel>/ProductName}">
+        <!-- <customHeader>
             <Toolbar>
-                <Text text="{Name} - {ProductId}" />
-                <ToolbarSpacer />
-                <Button icon="sap-icon://sys-cancel" press=".onRemoveComparison" tooltip="{i18n>removeFromComparisonTooltip}" />
+                <Button icon="sap-icon://nav-back" press=".onBack" tooltip="{i18n>backButtonTooltip}" />
+                <ToolbarSpacer/>
+                <Button icon="sap-icon://sys-cancel" press=".onCloseProduct" tooltip="{i18n>removeFromComparisonTooltip}" />
             </Toolbar>
-        </customHeader>
+        </customHeader> -->
         <content>
             <l:VerticalLayout class="sapUiContentPadding" width="100%">
-                <HBox alignItems="Start" class="comparebox sapUiMediumMarginBottom sapUiTinyMarginTop" renderType="Bare">
+                <HBox alignItems="Start" justifyContent="SpaceBetween" class="sapUiMediumMarginBottom sapUiTinyMarginTop">
                     <VBox width="60%" class="sapUiTinyMarginEnd">
-                        <!-- {= !!${productModel>/PictureUrl}} -->
-                        <Image src="{productModel>/PictureUrl}" alt="{i18n>comparisonAlternativeImageText}" densityAware="false" class="product-image-style" width="100%" visible="false">
+                        <Image src="{productModel>/ProductImage}" alt="{i18n>comparisonAlternativeImageText}" densityAware="false" width="100%" visible="{= !!${productModel>/ProductImage}}">
                             <detailBox>
                                 <LightBox>
                                     <imageContent>
-                                        <LightBoxItem imageSrc="{productModel>/PictureUrl}" title="{productModel>/Name}" />
+                                        <LightBoxItem imageSrc="{productModel>/ProductImage}" title="{productModel>/ProductName}" />
                                     </imageContent>
                                 </LightBox>
                             </detailBox>
                         </Image>
-                        <!-- {= !${productModel>/PictureUrl}} -->
-                        <VBox visible="true" width="100%" alignItems="Start" justifyContent="Center" class="fallback-avatar-container product-image-style fallback-height">
+                        <!-- <VBox visible="{= !${productModel>/ProductImage}}" width="100%" height="150px" alignItems="Center" justifyContent="Center" class="sapUiSmallMarginBottom sapUiTinyMarginTop sapUiShadow">
                             <Avatar initials="{
-                    path: 'productModel>/Category',
-                    formatter: '.formatter.getCategoryInitials'
-                }" displaySize="XL" displayShape="Square" backgroundColor="Accent1" class="sapUiSmallMarginBottom" />
-                        </VBox>
+                                path: 'productModel>/Category',
+                                formatter: '.formatter.getCategoryInitials'
+                            }" displaySize="XL" displayShape="Square" backgroundColor="Accent1" />
+                        </VBox> -->
                     </VBox>
+
                     <VBox width="40%" class="sapUiMediumMarginBegin" alignItems="End" justifyContent="Start">
-                        <ObjectNumber class="productPrice sapUiSmallMarginBottom" number="{
-                path: 'productModel>/Price',
-                type: 'sap.ui.model.type.Currency',
-                formatOptions: {showMeasure: false}
-            }" unit="{productModel>/CurrencyCode}" state="Success" emphasized="true" />
+                        <ObjectNumber class="productPrice sapUiSmallMarginBottom" number="{productModel>/UnitPrice}" unit="{productModel>/CurrencyCode}" state="Success" emphasized="true" />
                         <ObjectStatus class="sapUiSmallMarginBottom" text="{
-                path: 'productModel>/Status',
-                formatter: '.formatter.statusText'
-            }" state="{
-                path: 'productModel>/Status',
-                formatter: '.formatter.statusState'
-            }" />
-                        <Text text="Product ID: {productModel>/ProductId}" class="sapUiTinyMarginTop" />
+                                path: 'productModel>/Status',
+                                formatter: '.formatter.statusText'
+                            }" state="{
+                                path: 'productModel>/Status',
+                                formatter: '.formatter.statusState'
+                            }" />
                     </VBox>
                 </HBox>
-                <form:Form editable="false">
-                    <form:layout>
-                        <form:ResponsiveGridLayout labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" singleContainerFullSize="false" />
-                    </form:layout>
-                    <form:formContainers>
-                        <form:FormContainer>
-                            <form:FormElement label="{i18n>productSupplierAttributeText}">
-                                <form:fields>
-                                    <Text text="{productModel>/SupplierName}" />
-                                </form:fields>
-                            </form:FormElement>
-                            <form:FormElement label="{i18n>productDescriptionAttributeText}">
-                                <form:fields>
-                                    <Text text="{productModel>/ShortDescription}" />
-                                </form:fields>
-                            </form:FormElement>
-                            <form:FormElement label="{i18n>productWeightAttributeText}">
-                                <form:fields>
-                                    <Text text="{productModel>/Weight} {productModel>/WeightUnit}" />
-                                </form:fields>
-                            </form:FormElement>
-                            <form:FormElement label="{i18n>productMeasuresAttributeText}">
-                                <form:fields>
-                                    <Text text="{productModel>/DimensionWidth} {productModel>/Unit}, {productModel>/DimensionDepth} {productModel>/Unit}, {productModel>/DimensionHeight} {productModel>/Unit}" />
-                                </form:fields>
-                            </form:FormElement>
-                        </form:FormContainer>
-                    </form:formContainers>
-                </form:Form>
+
+                <l:VerticalLayout class="sapUiMediumMarginTopBottom" width="100%">
+                    <HBox class="sapUiTinyMarginBottom">
+                        <Label text="Category:" width="10rem" design="Bold"/>
+                        <Text text="{productModel>/Category}" />
+                    </HBox>
+                    <HBox class="sapUiTinyMarginBottom">
+                        <Label text="Commodity Code:" width="10rem" design="Bold"/>
+                        <Text text="{productModel>/CommodityCode}" />
+                    </HBox>
+                    <HBox class="sapUiTinyMarginBottom">
+                        <Label text="Part Number:" width="10rem" design="Bold"/>
+                        <Text text="{productModel>/PartNumber}" />
+                    </HBox>
+                    <HBox class="sapUiTinyMarginBottom">
+                        <Label text="Lead Time:" width="10rem" design="Bold"/>
+                        <Text text="{productModel>/LeadTime} Days" />
+                    </HBox>
+
+                    <Label text="Description:" class="sapUiSmallMarginTopBottom" design="Bold"/>
+                    <Text text="{productModel>/ProductDescription}" wrapping="true" class="sapUiSmallMarginBottom" />
+
+                    <Label text="Additional Link:" class="sapUiSmallMarginTopBottom" design="Bold"/>
+                    <Link text="{productModel>/AdditionalLink}" href="{productModel>/AdditionalLink}" target="_blank" />
+                </l:VerticalLayout>
+
             </l:VerticalLayout>
         </content>
     </Page>

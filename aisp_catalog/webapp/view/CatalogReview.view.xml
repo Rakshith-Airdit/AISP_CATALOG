@@ -1,0 +1,86 @@
+<mvc:View controllerName="com.catalog.aispcatalog.controller.CatalogReview"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core" displayBlock="true">
+    <Page title="Added Products ({= ${catalog>/items}.length })" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+
+            <VBox>
+                <!-- Products List as Panels -->
+                <List id="entryList" items="{
+            path: 'catalog>/items',
+            sorter: {
+              path: 'productName', 
+              descending: false
+            }
+          }" noDataText="Your cart is empty">
+
+                    <items>
+                        <CustomListItem>
+                            <Panel headerText="{catalog>productName}" expandable="true" expanded="true" width="auto">
+                                <VBox class="sapUiSmallMargin">
+
+                                    <!-- Category -->
+                                    <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                                        <Label text="Category:" class="sapUiTinyMarginEnd" />
+                                        <Text text="{catalog>category}" />
+                                    </HBox>
+
+                                    <!-- Price -->
+                                    <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                                        <Label text="Price:" class="sapUiTinyMarginEnd" />
+                                        <ObjectNumber number="{
+                        path: 'catalog>unitPrice',
+                        formatter: '.formatter.price'
+                      }" unit="{catalog>currency}" state="Success" />
+                                    </HBox>
+
+                                    <!-- Lead Time -->
+                                    <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                                        <Label text="Lead Time:" class="sapUiTinyMarginEnd" />
+                                        <Text text="{catalog>leadTime} days" />
+                                    </HBox>
+
+                                    <!-- Search Terms -->
+                                    <HBox alignItems="Start" class="sapUiSmallMarginBottom">
+                                        <Label text="Search Terms:" class="sapUiTinyMarginEnd" />
+                                        <VBox>
+                                            <Text text="{= ${catalog>searchTerms}.join(', ') }" />
+                                        </VBox>
+                                    </HBox>
+
+                                    <!-- Part Number -->
+                                    <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                                        <Label text="Part Number:" class="sapUiTinyMarginEnd" />
+                                        <Text text="{catalog>partNumber}" />
+                                    </HBox>
+
+                                    <!-- Description -->
+                                    <HBox alignItems="Start" class="sapUiSmallMarginBottom">
+                                        <Label text="Description:" class="sapUiTinyMarginEnd" />
+                                        <Text text="{catalog>productDescription}" wrapping="true" />
+                                    </HBox>
+
+                                    <!-- Action Buttons -->
+                                    <HBox class="sapUiSmallMarginTop">
+                                        <Button text="Edit" icon="sap-icon://edit" press=".-" class="sapUiTinyMarginEnd" />
+                                        <Button text="Delete" icon="sap-icon://delete" type="Reject" press=".onDeleteProduct" />
+                                    </HBox>
+
+                                </VBox>
+                            </Panel>
+                        </CustomListItem>
+                    </items>
+                </List>
+            </VBox>
+        </content>
+
+        <footer>
+            <Toolbar >
+                <ToolbarSpacer/>
+                <Button text="Submit Catalogs" press="onSubmitAllCatalogs" class="sapUiSmallMarginBottom" />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

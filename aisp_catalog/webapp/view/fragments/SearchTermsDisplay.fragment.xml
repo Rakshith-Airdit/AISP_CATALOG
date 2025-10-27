@@ -1,0 +1,4 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Token text="{catalog>}" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" visible="{= ${catalog>} !== '' &amp;&amp; ${catalog>} !== undefined }" />
+</core:FragmentDefinition>

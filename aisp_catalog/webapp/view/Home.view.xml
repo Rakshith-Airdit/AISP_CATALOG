@@ -5,8 +5,7 @@
     <Page id="page" title="{i18n>title}">
         <subHeader>
             <Toolbar id="searchBar">
-                <SearchField id="searchField" liveChange=".onSearch" placeholder="{i18n>homeSearchPlaceholder}" tooltip="{i18n>homeSearchTooltip}" width="100%">
-                </SearchField>
+                <SearchField id="searchField" liveChange=".onSearch" placeholder="{i18n>homeSearchPlaceholder}" tooltip="{i18n>homeSearchTooltip}" width="100%" />
             </Toolbar>
         </subHeader>
         <content>
@@ -15,41 +14,29 @@
                         path: 'CategoryName',
                         descending: false
                     } -->
-            <!-- Product Categories List -->
             <!-- Product List for Search Results -->
             <List visible="false" id="productList" mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}" selectionChange=".onProductListItemPress" noDataText="{i18n>homeNoData}" busyIndicatorDelay="0" items="{
-        path: 'oProductItemsModel>/' 
-    }">
+                path: 'oProductItemsModel>/' 
+            }">
                 <items>
-                    <ObjectListItem type="{= ${device>/system/phone} ? 'Active' : 'Inactive'}" icon="sap-icon://card" title="{oProductItemsModel>ProductName}" number="{
-                path: 'oProductItemsModel>UnitPrice', 
-                formatter: '.formatter.price' 
-            }" numberUnit="{oProductItemsModel>CurrencyCode}" iconDensityAware="false">
-
-                        <attributes>
-                            <ObjectAttribute text="{oProductItemsModel>SupplierName}"/>
-                        </attributes>
-                        <firstStatus>
-                            <ObjectStatus text="{
-                        path: 'oProductItemsModel>Status', 
-                        formatter: '.formatter.statusText' 
-                    }" state="{
-                        path: 'oProductItemsModel>Status', 
-                        formatter: '.formatter.statusState' 
-                    }"/>
-                        </firstStatus>
-                    </ObjectListItem>
+                    <StandardListItem type="{= ${device>/system/phone} ? 'Active' : 'Inactive'}" title="{oProductItemsModel>ProductName}" icon="{oProductItemsModel>ProductImage}" iconDensityAware="false" description="Price: {
+                            path: 'oProductItemsModel>UnitPrice', 
+                            formatter: '.formatter.price' 
+                        } {oProductItemsModel>CurrencyCode} | PartNumber: {oProductItemsModel>PartNumber}" infoState="{
+                            path: 'oProductItemsModel>Status', 
+                            formatter: '.formatter.statusState' 
+                        }" />
                 </items>
             </List>
 
             <!-- Product Categories List -->
             <List id="categoryList" headerText="{i18n>Categories}" mode="None" busyIndicatorDelay="0" items="{
-                    path: 'oCommodityCodesModel>/'
-                }">
+                path: 'oCommodityCodesModel>/'
+            }">
                 <items>
                     <StandardListItem title="{oCommodityCodesModel>CommodityName}" type="Active" counter="{oCommodityCodesModel>NumberOfProducts}" press=".onCategoryListItemPress" tooltip="{oCommodityCodesModel>CommodityName}">
                         <customData>
-                            <core:CustomData key="id" value="{oCommodityCodesModel>Commodity}"/>
+                            <core:CustomData key="id" value="{oCommodityCodesModel>Commodity}" />
                         </customData>
                     </StandardListItem>
                 </items>
