@@ -1,0 +1,131 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified">
+    <Dialog id="editCatalogItemDialog" title="Edit Catalog Item" contentWidth="800px" contentHeight="700px" verticalScrolling="true">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Title text="Product Details" level="H2" class="sapUiSmallMarginBottom" />
+
+                <l:Grid defaultSpan="L6 M6 S12" class="sapUiSmallMarginBottom">
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Product Name" required="true" />
+                        <Input value="{oEditFormModel>/productName}" placeholder="Enter product name" width="100%" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Commodity Code (UNSPSC)" required="true" />
+                        <!-- <ComboBox items="{appView>/commodityCodes}" selectedKey="{oEditFormModel>/commodityCode}" change="onCommodityCodeChange" placeholder="Select commodity code" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
+                        </ComboBox> -->
+                        <Input id="editCommodityCodeInput" value="{oEditFormModel>/commodityCode}" placeholder="Select Commodity Code" showValueHelp="true" valueHelpRequest="onCommodityCodeValueHelp" showSuggestion="true" enableSuggestionsHighlighting="true" suggest="onCommoditySuggestion" width="100%" suggestionItems="{/ProductCatalogCommodityCodes}" suggestionItemSelected="onCommoditySuggestionSelect" liveChange="onCommodityCodeChange">
+                            <suggestionItems>
+                                <core:Item text="{Commodity}" />
+                                <core:Item text="{CommodityName}" />
+                            </suggestionItems>
+                        </Input>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Category" required="true" />
+                        <Input value="{oEditFormModel>/category}" placeholder="Category will be auto-filled" width="100%" editable="false" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Search Term" required="true" />
+                        <MultiInput id="editSearchTermsInput" showValueHelp="false" showSuggestion="false" change="onSearchTermChange" width="100%" placeholder="Enter search keywords (press Enter or Comma after each)" tokens="{path: 'oEditFormModel>/searchTerms'}" tokenUpdate="onSearchTermTokenUpdate">
+                            <tokens>
+                                <Token key="{oEditFormModel>}" text="{oEditFormModel>}" />
+                            </tokens>
+                        </MultiInput>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Unit Price" required="true" />
+                        <Input type="Number" value="{oEditFormModel>/unitPrice}" placeholder="Enter unit price" width="100%" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Currency" required="true" />
+                        <!-- <ComboBox items="{appView>/currencies}" selectedKey="{oEditFormModel>/currency}" placeholder="Select currency" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
+                        </ComboBox> -->
+                        <Input id="editCurrencyInput" value="{oEditFormModel>/currency}" placeholder="Select currency" showValueHelp="true" showSuggestion="true" valueHelpRequest="onCurrencyValueHelp" width="100%" suggest="onCurrencySuggestion" suggestionItems="{/Currencies}" suggestionItemSelected="onCurrencySuggestionSelect">
+                            <suggestionItems>
+                                <core:Item text="{WAERS}" />
+                                <core:Item text="{LTEXT}" />
+                            </suggestionItems>
+                        </Input>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Unit of Measure" required="true" />
+                        <!-- <ComboBox items="{appView>/unitsOfMeasure}" selectedKey="{oEditFormModel>/unitOfMeasure}" placeholder="Select unit of measure" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
+                        </ComboBox> -->
+                        <Input id="editUnitOfMeasureInput" value="{oEditFormModel>/unitOfMeasure}" placeholder="Select unit of measure" showValueHelp="true" showSuggestion="true" valueHelpRequest="onUnitOfMeasureValueHelp" width="100%" suggest="onUnitOfMeasureSuggestion" suggestionItems="{/UnitsOfMeasure}" suggestionItemSelected="onUOMSuggestionSelect">
+                            <suggestionItems>
+                                <core:Item text="{UnitCode}" />
+                                <core:Item text="{Text}" />
+                            </suggestionItems>
+                        </Input>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Lead Time (Days)" required="true" />
+                        <Input type="Number" value="{oEditFormModel>/leadTime}" placeholder="Enter lead time in days" width="100%" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Part Number (Optional)" />
+                        <Input value="{oEditFormModel>/partNumber}" placeholder="Enter part number" width="100%" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Additional Link" required="true" />
+                        <Input value="{oEditFormModel>/additionalLink}" placeholder="Enter product URL" width="100%" />
+                    </VBox>
+                </l:Grid>
+
+                <VBox class="sapUiTinyMarginBottom">
+                    <Label text="Product Description" required="true" />
+                    <TextArea value="{oEditFormModel>/productDescription}" rows="3" width="100%" maxLength="500" placeholder="Enter detailed product description" />
+                </VBox>
+
+                <!-- Product Image Section -->
+                <VBox class="sapUiTinyMarginBottom">
+                    <Label text="Product Image" required="true" />
+                    <MessageStrip text="JPEG, PNG, max 5MB" type="Information" showIcon="true" class="sapUiTinyMarginBottom" />
+                    <HBox alignItems="Center">
+                        <u:FileUploader id="editProductImageUploader" buttonText="Browse" fileType="jpg,png,jpeg" maximumFileSize="5" placeholder="Drag and drop image file" style="Emphasized" width="250px" change="onImageFileChange" />
+                        <Button id="editPreviewImageButton" text="Preview" icon="sap-icon://picture" type="Transparent" press="onPreviewImage" enabled="{= !!${oEditFormModel>/ProductImage}}" class="sapUiSmallMarginBegin" />
+                        <Button id="editRemoveImageButton" icon="sap-icon://sys-cancel" type="Transparent" press="onRemoveImage" enabled="{= !!${oEditFormModel>/ProductImage}}" tooltip="Remove Image" />
+                    </HBox>
+                    <Text id="editImageFileName" text="" class="sapUiTinyMarginTop" />
+                </VBox>
+
+                <!-- Product Specification Section -->
+                <VBox class="sapUiTinyMarginBottom">
+                    <Label text="Product Specification (PDF)" required="true" />
+                    <MessageStrip text="PDF, max 5MB" type="Information" showIcon="true" class="sapUiTinyMarginBottom" />
+                    <HBox alignItems="Center">
+                        <u:FileUploader id="editProductSpecUploader" buttonText="Browse" fileType="pdf" maximumFileSize="5" placeholder="Drag and drop PDF file" style="Emphasized" width="250px" change="onPdfFileChange" />
+                        <Button id="editPreviewPdfButton" text="Preview" icon="sap-icon://pdf-attachment" type="Transparent" press="onPreviewPdf" enabled="false" class="sapUiSmallMarginBegin" />
+                        <Button id="editRemovePdfButton" icon="sap-icon://sys-cancel" type="Transparent" press="onRemovePdf" enabled="false" tooltip="Remove PDF" />
+                    </HBox>
+                    <Text id="editPdfFileName" text="" class="sapUiTinyMarginTop" />
+                </VBox>
+            </VBox>
+        </content>
+
+        <footer>
+            <Toolbar>
+                <content>
+                    <Button type="Reject" text="Cancel" press="onCancelEditDialog" />
+                    <ToolbarSpacer />
+                    <Button type="Emphasized" text="Update Catalog" press="onUpdateCatalogItem" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</core:FragmentDefinition>

@@ -24,9 +24,11 @@
                         </layoutData>
                     </Avatar> -->
 
-                    <!-- <Button text="Bulk Upload" type="Default" icon="sap-icon://upload" class="sapUiTinyMarginEnd">
-                    </Button> -->
+                    <Button text="Bulk Upload" type="Default" icon="sap-icon://upload" class="sapUiTinyMarginEnd" press="onOpenBulkUploadDialog">
+                    </Button>
                     <Button text="Create Catalog Item" type="Emphasized" icon="sap-icon://add" class="sapUiTinyMarginEnd" press="onCreateCatalog">
+                    </Button>
+                    <Button text="Added Catalog Items" type="Emphasized" icon="sap-icon://cart" class="sapUiTinyMarginEnd" press="_navigateToCatalogReview" visible="{= ${catalog>/catalogItems}.length > 0 }">
                     </Button>
                 </tnt:ToolHeader>
             </customHeader>

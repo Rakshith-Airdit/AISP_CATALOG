@@ -1,0 +1,28 @@
+<core:FragmentDefinition xmlns="sap.ui.comp.valuehelpdialog"
+    xmlns:m="sap.m"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:core="sap.ui.core">
+
+    <ValueHelpDialog id="currencyValueHelp" title="Select Currency" ok=".onCurrencyVHOk" cancel=".onCurrencyVHCancel" supportMultiselect="false" key="WAERS" descriptionKey="LTEXT">
+
+        <filterBar>
+            <fb:FilterBar useToolbar="false" advancedMode="false" search=".onCurrencyVHSearch" isRunningInValueHelpDialog="true" showFilterConfiguration="false" showRestoreButton="false" showClearButton="true">
+
+                <fb:filterGroupItems>
+                    <fb:FilterGroupItem groupName="basic" name="WAERS" label="Currency" visibleInFilterBar="true">
+                        <fb:control>
+                            <m:Input value="{/filters/WAERS}" placeholder="Enter Currency Code" />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+
+                    <fb:FilterGroupItem groupName="basic" name="LTEXT" label="Description" visibleInFilterBar="true">
+                        <fb:control>
+                            <m:Input value="{/filters/LTEXT}" placeholder="Enter Currency Description" />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                </fb:filterGroupItems>
+            </fb:FilterBar>
+        </filterBar>
+
+    </ValueHelpDialog>
+</core:FragmentDefinition>

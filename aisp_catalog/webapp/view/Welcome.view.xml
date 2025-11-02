@@ -26,7 +26,7 @@
                 <!-- Products Grid -->
                 <f:GridList id="productGrid" items="{view>/AllProducts}" mode="None" width="100%" visible="{= !!${view>/AllProducts/length}}" class="sapUiSmallMarginTop">
                     <f:customLayout>
-                        <grid:GridBoxLayout boxMinWidth="18rem"  />
+                        <grid:GridBoxLayout boxMinWidth="18rem" />
                     </f:customLayout>
 
                     <f:GridListItem type="Active" press="onSelectProduct">
@@ -35,8 +35,9 @@
                                 <VBox class="sapUiSmallMargin" height="100%" width="100%">
                                     <Image src="{view>ProductImage}" alt="{view>ProductName}" width="100%" height="10rem" class="sapUiSmallMarginBottom" />
                                     <core:HTML content="&lt;hr style='border-top: 1px solid #e0e0e0;'&gt;" />
-                                    <Title text="{view>ProductName}" level="H3" wrapping="true" class="sapUiSmallMarginBottom" />
-                                    <ObjectStatus text="{view>Category}" state="Success" class="sapUiTinyMarginBottom" />
+                                    <Title text="{view>ProductName}" wrapping="true" class="sapUiSmallMarginBottom" />
+                                    <!-- <ObjectStatus text="{view>Category}" state="Success" inverted="true" class="sapUiTinyMarginBottom" /> -->
+                                    <GenericTag text="{view>Category}" design="StatusIconHidden" status="Success" class="sapUiSmallMarginBottom" />
                                     <Text text="{view>ProductDescription}" wrapping="true" class="sapUiSmallMarginBottom" maxLines="3" />
                                     <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
                                         <Text text="Unit Price" />

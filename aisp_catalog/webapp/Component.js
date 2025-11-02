@@ -25,10 +25,17 @@ sap.ui.define(
           catalogItems: [],
           selectedProduct: null,
         });
+
         this.setModel(oCatalogModel, "catalog");
 
         // enable routing
         this.getRouter().initialize();
+
+        this._oCatalogEventBus = sap.ui.getCore().getEventBus();
+      },
+
+      publishCatalogRefresh: function () {
+        this._oCatalogEventBus.publish("catalog", "refresh");
       },
     });
   }

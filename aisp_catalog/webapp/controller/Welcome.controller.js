@@ -55,9 +55,7 @@ sap.ui.define(
         const aProductsData = this.getView()
           .getModel("view")
           .getProperty("/AllProducts");
-        if (!aProductsData.length) {
-          this._loadAllProducts();
-        }
+        this._loadAllProducts();
       },
 
       _loadAllProducts: function () {

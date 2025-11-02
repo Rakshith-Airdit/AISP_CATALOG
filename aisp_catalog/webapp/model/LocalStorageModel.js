@@ -96,7 +96,7 @@ sap.ui.define(
       removeCatalogItem: function (sItemId) {
         const aCatalogItems = this.getCatalogItems();
         const aUpdatedItems = aCatalogItems.filter(
-          (item) => item.id !== sItemId
+          (item) => item.id !== sItemId && item.DraftId !== sItemId
         );
         this.setProperty("/catalogItems", aUpdatedItems);
 

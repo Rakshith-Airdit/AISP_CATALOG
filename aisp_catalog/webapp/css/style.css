@@ -3,3 +3,23 @@ html,
 body {
   overflow-y: hidden;
 }
+
+/* Light blue background + border for Download Template */
+.bulkUploadDownloadBox {
+  background: #f0f7ff;
+  border: 1px solid #b8daff;
+  border-radius: 6px;
+}
+
+/* Dashed border + light background for Upload area */
+#uploadCollection.sapMUC {
+  border: 2px dashed #ced4da;
+  background: #fdfdfd;
+  border-radius: 8px;
+}
+
+/* Subtle border around File Requirements */
+.bulkUploadReqBox {
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+}

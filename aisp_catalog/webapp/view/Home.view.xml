@@ -17,7 +17,7 @@
             <!-- Product List for Search Results -->
             <List visible="false" id="productList" mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}" selectionChange=".onProductListItemPress" noDataText="{i18n>homeNoData}" busyIndicatorDelay="0" items="{
                 path: 'oProductItemsModel>/' 
-            }">
+            }" growing="true" growingThreshold="100" growingScrollToLoad="true">
                 <items>
                     <StandardListItem type="{= ${device>/system/phone} ? 'Active' : 'Inactive'}" title="{oProductItemsModel>ProductName}" icon="{oProductItemsModel>ProductImage}" iconDensityAware="false" description="Price: {
                             path: 'oProductItemsModel>UnitPrice', 
@@ -32,7 +32,7 @@
             <!-- Product Categories List -->
             <List id="categoryList" headerText="{i18n>Categories}" mode="None" busyIndicatorDelay="0" items="{
                 path: 'oCommodityCodesModel>/'
-            }">
+            }" growing="true" growingThreshold="100" growingScrollToLoad="true">
                 <items>
                     <StandardListItem title="{oCommodityCodesModel>CommodityName}" type="Active" counter="{oCommodityCodesModel>NumberOfProducts}" press=".onCategoryListItemPress" tooltip="{oCommodityCodesModel>CommodityName}">
                         <customData>

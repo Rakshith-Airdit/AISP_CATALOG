@@ -33,7 +33,7 @@
                     </VBox>
 
                     <VBox width="40%" class="sapUiMediumMarginBegin" alignItems="End" justifyContent="Start">
-                        <ObjectNumber class="productPrice sapUiSmallMarginBottom" number="{productModel>/UnitPrice}" unit="{productModel>/CurrencyCode}" state="Success" emphasized="true" />
+                        <ObjectNumber class="productPrice sapUiSmallMarginBottom sapMObjectNumberLarge " number="{productModel>/UnitPrice}" unit="{productModel>/CurrencyCode}" state="Success" emphasized="true" />
                         <ObjectStatus class="sapUiSmallMarginBottom" text="{
                                 path: 'productModel>/Status',
                                 formatter: '.formatter.statusText'

@@ -58,9 +58,6 @@ sap.ui.define(
 
         this._loadMasterData();
 
-        // Listen for catalog model changes to update all components
-        this._setupCatalogModelListener();
-
         this.getOwnerComponent()
           .getModel()
           .metadataLoaded()
@@ -70,33 +67,12 @@ sap.ui.define(
           .attachMetadataFailed(fnSetAppNotBusy);
       },
 
-      _publishCatalogRefresh: function () {
-        this.getOwnerComponent().publishCatalogRefresh();
-      },
-
       _initModels: function (aModelConfigs) {
         aModelConfigs.forEach((config) => {
           this.getView().setModel(new JSONModel(config.data), config.name);
         });
       },
 
-      _setupCatalogModelListener: function () {
-        const oCatalogModel = this.getOwnerComponent().getModel("catalog");
-
-        // Refresh create dialog when catalog changes
-        oCatalogModel.attachPropertyChange(
-          "/catalogItems",
-          function (oEvent) {
-            if (
-              this._oCreateCatalogDialog &&
-              this._oCreateCatalogDialog.isOpen()
-            ) {
-              // Force refresh of the dialog binding
-              this._oCreateCatalogDialog.getModel("catalog").refresh();
-            }
-          }.bind(this)
-        );
-      },
       /* ------------------------------------------------------------------ */
       /*  MASTER DATA                                                       */
       /* ------------------------------------------------------------------ */
@@ -212,7 +188,6 @@ sap.ui.define(
       onAddAndViewCatalog: function () {
         const oFormModel =
           this._oCreateCatalogDialog.getModel("oCreateFormModel");
-        const oCatalogModel = this.getOwnerComponent().getModel("catalog");
         const oData = oFormModel.getData();
 
         if (!this._validateForm(oData)) return;
@@ -223,80 +198,30 @@ sap.ui.define(
           return;
         }
 
-        // Check if we have an existing batch
-        const aExistingItems = oCatalogModel.getProperty("/catalogItems") || [];
-        let sExistingBatchId = null;
-
-        if (aExistingItems.length > 0) {
-          // Use the batch ID from the first item
-          sExistingBatchId = aExistingItems[0].BatchID;
-        }
-
-        // Show busy indicator
-        sap.ui.core.BusyIndicator.show(0);
-
-        // Create draft item directly
-        const oDraftItem = {
-          ProductName: oData.productName,
-          CommodityCode: parseInt(oData.commodityCode),
-          Category: oData.category,
-          SearchTerm: aTerms, // This will be converted to string in backend
-          UnitPrice: parseFloat(oData.unitPrice),
-          CurrencyCode: oData.currency,
-          UnitOfMeasure: oData.unitOfMeasure,
-          LeadTimeDays: parseInt(oData.leadTime),
-          PartNumber: oData.partNumber || "",
-          AdditionalLink: oData.additionalLink,
-          ProductDescription: oData.productDescription,
-          ProductImage: oData.productImage || "",
-          ProductSpecification: oData.productSpecification || "",
-          DraftStatus: "draft",
+        const oItem = {
+          productName: oData.productName,
+          commodityCode: oData.commodityCode,
+          category: oData.category,
+          searchTerms: aTerms,
+          unitPrice: parseFloat(oData.unitPrice),
+          currency: oData.currency,
+          unitOfMeasure: oData.unitOfMeasure,
+          leadTime: parseInt(oData.leadTime),
+          partNumber: oData.partNumber,
+          additionalLink: oData.additionalLink,
+          productDescription: oData.productDescription,
+          ProductImage: oData.productImage,
+          ProductSpecification: oData.productSpecification,
+          selectedImageFile: oData.selectedImageFile,
+          selectedPdfFile: oData.selectedPdfFile,
+          timestamp: Date.now(),
+          id: "temp_" + Date.now(),
         };
 
-        // If we have an existing batch, include the BatchID
-        if (sExistingBatchId) {
-          oDraftItem.BatchID = sExistingBatchId;
-        }
-
-        const {
-          ProductImage,
-          ProductSpecification,
-          DraftStatus,
-          ...oCatalogItem
-        } = oDraftItem;
-
-        const oModel = this.getOwnerComponent().getModel();
-
-        oModel.create("/ProductCatalogDrafts", oDraftItem, {
-          success: (oResult) => {
-            sap.ui.core.BusyIndicator.hide();
-            MessageToast.show("Product saved as draft successfully");
-            oCatalogModel.addCatalogItem({
-              ...oCatalogItem,
-              // Store backend references
-              // id: oResult.ID,
-              DraftId: oResult.ID,
-              BatchID: oResult.BatchID,
-            });
-            this._oCreateCatalogDialog.close();
-            this._resetCreateForm();
-            this._publishCatalogRefresh();
-            this._navigateToCatalogReview();
-          },
-          error: (oError) => {
-            sap.ui.core.BusyIndicator.hide();
-            console.error("Failed to save draft:", oError);
-            MessageBox.error(
-              "Failed to save product as draft. Please try again."
-            );
-          },
-        });
-      },
-
-      // In CatalogReview.controller.js
-
-      refreshCatalogData: function () {
-        this._loadDraftItems();
+        this.getOwnerComponent().getModel("catalog").addCatalogItem(oItem);
+        this._oCreateCatalogDialog.close();
+        this._resetCreateForm();
+        this._navigateToCatalogReview();
       },
 
       onCancelDialog: function () {
@@ -514,21 +439,16 @@ sap.ui.define(
       onCommodityVHOk: function (oEvent) {
         this._handleValueHelpOk(oEvent, "commodityCodeInput", "/category");
       },
+
       onCurrencyVHOk: function (oEvent) {
         this._handleValueHelpOk(oEvent, "currencyInput");
       },
+
       onUomVHOk: function (oEvent) {
         this._handleValueHelpOk(oEvent, "unitOfMeasureInput");
       },
 
-      _handleValueHelpOk: function (oEvent, sCreateInputId, sFormPropertyPath) {
-        const oActiveDialog = this._getActiveDialogAndModel();
-        if (!oActiveDialog) return;
-        const { dialog: oDialog, modelName: sModelName } = oActiveDialog;
-        const sInputId =
-          oDialog === this._oCreateCatalogDialog
-            ? sCreateInputId
-            : this._getEditInputId(sCreateInputId);
+      _handleValueHelpOk: function (oEvent, sInputId, sFormPropertyPath) {
         const aSelectedTokens = oEvent.getParameter("tokens") || [];
         const oInput = this.byId(sInputId);
 
@@ -536,11 +456,12 @@ sap.ui.define(
           const oSelectedToken = aSelectedTokens[0];
           oInput.setValue(oSelectedToken.getKey());
 
-          if (sFormPropertyPath && oActiveDialog) {
-            const oFormModel = oDialog.getModel(sModelName);
+          if (sFormPropertyPath && this._oCreateCatalogDialog) {
+            const oFormModel =
+              this._oCreateCatalogDialog.getModel("oCreateFormModel");
             oFormModel.setProperty(
               sFormPropertyPath,
-              oSelectedToken.getText().split(" (")[0]
+              oSelectedToken.getText().split(" ")[0]
             );
           }
         }
@@ -549,54 +470,11 @@ sap.ui.define(
         );
       },
 
-      _getActiveDialogAndModel: function () {
-        // Check create dialog first with proper existence checks
-        if (this._oCreateCatalogDialog && this._oCreateCatalogDialog.isOpen()) {
-          const oCreateModel =
-            this._oCreateCatalogDialog.getModel("oCreateFormModel");
-          if (oCreateModel) {
-            return {
-              dialog: this._oCreateCatalogDialog,
-              modelName: "oCreateFormModel",
-              type: "create",
-            };
-          }
-        }
-
-        // Check edit dialog
-        if (this._oEditCatalogDialog && this._oEditCatalogDialog.isOpen()) {
-          const oEditModel =
-            this._oEditCatalogDialog.getModel("oEditFormModel");
-          if (oEditModel) {
-            return {
-              dialog: this._oEditCatalogDialog,
-              modelName: "oEditFormModel",
-              type: "edit",
-            };
-          }
-        }
-
-        console.warn("No active dialog found with model");
-        return null;
-      },
-
-      _getEditInputId: function (sCreateId) {
-        const map = {
-          commodityCodeInput: "editCommodityCodeInput",
-          currencyInput: "editCurrencyInput",
-          unitOfMeasureInput: "editUnitOfMeasureInput",
-        };
-        return map[sCreateId] || sCreateId;
-      },
-
       _getDialogVariableFromInputId: function (sInputId) {
         const dialogMap = {
           commodityCodeInput: "_oCommodityVHDialog",
           currencyInput: "_oCurrencyVHDialog",
           unitOfMeasureInput: "_oUomVHDialog",
-          editCommodityCodeInput: "_oCommodityVHDialog",
-          editCurrencyInput: "_oCurrencyVHDialog",
-          editUnitOfMeasureInput: "_oUomVHDialog",
         };
         return dialogMap[sInputId];
       },
@@ -744,16 +622,11 @@ sap.ui.define(
       },
 
       onCommodityCodeChange: function (oEvent) {
-        const oSource = oEvent.getSource();
         const sNewValue = oEvent.getParameter("value");
-        const bEdit = oSource.getId().includes("edit");
-        const oDialog = bEdit
-          ? this._oEditCatalogDialog
-          : this._oCreateCatalogDialog;
-        const oModel = bEdit ? "oEditFormModel" : "oCreateFormModel";
+        const oDialog = this._oCreateCatalogDialog || this._oEditCatalogDialog;
 
         if ((!sNewValue || sNewValue.trim() === "") && oDialog) {
-          const oFormModel = oDialog.getModel(oModel);
+          const oFormModel = oDialog.getModel("oCreateFormModel");
           oFormModel.setProperty("/category", "");
         }
       },
@@ -762,18 +635,13 @@ sap.ui.define(
       /*  SEARCH TERMS (MultiInput)                                        */
       /* ------------------------------------------------------------------ */
       onSearchTermChange: function (oEvent) {
-        const oSource = oEvent.getSource();
         const sValue = oEvent.getParameter("value").trim();
         if (!sValue) return;
 
-        const bEdit = oSource.getId().includes("edit");
-        const oDialog = bEdit
-          ? this._oEditCatalogDialog
-          : this._oCreateCatalogDialog;
-        const oModel = bEdit ? "oEditFormModel" : "oCreateFormModel";
+        const oDialog = this._oCreateCatalogDialog || this._oEditCatalogDialog;
         if (!oDialog) return;
 
-        const oForm = oDialog.getModel(oModel);
+        const oForm = oDialog.getModel("oCreateFormModel");
         const aSearchTerms = oForm.getProperty("/searchTerms") || [];
 
         if (!aSearchTerms.includes(sValue)) {
@@ -848,6 +716,8 @@ sap.ui.define(
           productDescription: oProduct.productDescription,
           productImage: oProduct.ProductImage || "",
           productSpecification: oProduct.ProductSpecification || "",
+          selectedImageFile: oProduct.selectedImageFile,
+          selectedPdfFile: oProduct.selectedPdfFile,
           editingProductId: oProduct.id,
         });
 
@@ -861,35 +731,23 @@ sap.ui.define(
       },
 
       _initializeEditFormFields: function (oProduct) {
-        const oModel = this._oEditCatalogDialog.getModel("oEditFormModel");
-
-        // ----- IMAGE -----
-        const oImgUploader = this.getView().byId("editProductImageUploader");
-        const oImgPreviewBtn = this.getView().byId("editPreviewImageButton");
-        const oImgRemoveBtn = this.getView().byId("editRemoveImageButton");
-        const sImgUrl = oModel.getProperty("/productImage");
-
-        //oImgUploader.setValue(""); // clear uploader
-        oImgPreviewBtn.setEnabled(!!sImgUrl);
-        oImgRemoveBtn.setEnabled(!!sImgUrl);
-        oImgUploader.setValue(sImgUrl);
-
-        // ----- PDF -----
-        const oPdfUploader = this.getView().byId("editProductSpecUploader");
-        const oPdfPreviewBtn = this.getView().byId("editPreviewPdfButton");
-        const oPdfRemoveBtn = this.getView().byId("editRemovePdfButton");
-        const sPdfUrl = oModel.getProperty("/productSpecification");
-
-        // oPdfUploader.setValue("");
-        oPdfPreviewBtn.setEnabled(!!sPdfUrl);
-        oPdfRemoveBtn.setEnabled(!!sPdfUrl);
-        oPdfUploader.setValue(sPdfUrl);
+        const uploadedProductImg = this.getView().byId(
+          "editProductImageUploader"
+        );
+        const uploadedProductFile = this.getView().byId(
+          "editProductSpecUploader"
+        );
+        if (oProduct.selectedImageFile && uploadedProductImg) {
+          uploadedProductImg.setName(oProduct.selectedImageFile);
+        }
+        if (oProduct.selectedPdfFile && uploadedProductFile) {
+          uploadedProductFile.setName(oProduct.selectedPdfFile);
+        }
       },
 
       onUpdateCatalogItem: function () {
         const oForm = this._oEditCatalogDialog.getModel("oEditFormModel");
         const oData = oForm.getData();
-        const oModel = this.getOwnerComponent().getModel();
 
         if (!this._validateForm(oData)) return;
 
@@ -899,68 +757,37 @@ sap.ui.define(
           return;
         }
 
-        const oPayload = {
-          ProductName: oData.productName,
-          CommodityCode: parseInt(oData.commodityCode),
-          Category: oData.category,
-          SearchTerm: aTerms,
-          UnitPrice: parseFloat(oData.unitPrice),
-          CurrencyCode: oData.currency,
-          UnitOfMeasure: oData.unitOfMeasure,
-          LeadTimeDays: parseInt(oData.leadTime),
-          PartNumber: oData.partNumber || "",
-          AdditionalLink: oData.additionalLink,
-          ProductDescription: oData.productDescription,
+        const oUpdatedItem = {
+          productName: oData.productName,
+          commodityCode: oData.commodityCode,
+          category: oData.category,
+          searchTerms: aTerms,
+          unitPrice: parseFloat(oData.unitPrice),
+          currency: oData.currency,
+          unitOfMeasure: oData.unitOfMeasure,
+          leadTime: parseInt(oData.leadTime),
+          partNumber: oData.partNumber,
+          additionalLink: oData.additionalLink,
+          productDescription: oData.productDescription,
           ProductImage: oData.productImage,
           ProductSpecification: oData.productSpecification,
-          DraftStatus: "draft",
-          BatchID: oData.BatchID,
+          timestamp: Date.now(),
+          id: oData.editingProductId,
         };
 
-        const {
-          ProductImage,
-          ProductSpecification,
-          DraftStatus,
-          ...oCatalogItem
-        } = oPayload;
+        const oCatalog = this.getOwnerComponent().getModel("catalog");
+        const aItems = oCatalog.getProperty("/items") || [];
+        const iIndex = aItems.findIndex((item) => item.id === oUpdatedItem.id);
 
-        oCatalogItem["DraftId"] = oData.editingProductId;
-
-        const sDraftKey = `/ProductCatalogDrafts(guid'${oData.editingProductId}')`;
-
-        sap.ui.core.BusyIndicator.show(0);
-
-        oModel.update(sDraftKey, oPayload, {
-          success: () => {
-            sap.ui.core.BusyIndicator.hide();
-
-            // --- ALSO update local catalog model (for review list) ---
-            const oCatalog = this.getOwnerComponent().getModel("catalog");
-            const aItems = oCatalog.getProperty("/catalogItems") || [];
-            const iIndex = aItems.findIndex(
-              (item) => item.DraftId === oData.editingProductId
-            );
-
-            if (iIndex > -1) {
-              aItems[iIndex] = {
-                ...aItems[iIndex],
-                ...oPayload,
-                DraftId: oData.editingProductId,
-              };
-              oCatalog.setProperty("/catalogItems", aItems);
-            }
-
-            this._oEditCatalogDialog.close();
-            MessageToast.show("Product updated successfully");
-            this._publishCatalogRefresh();
-          },
-          error: (oError) => {
-            sap.ui.core.BusyIndicator.hide();
-            MessageBox.error(
-              "Failed to update: " + (oError.message || "Unknown error")
-            );
-          },
-        });
+        if (iIndex > -1) {
+          aItems[iIndex] = oUpdatedItem;
+          oCatalog.setProperty("/items", aItems);
+          this._oEditCatalogDialog.close();
+          MessageToast.show("Product updated successfully");
+          this._refreshCatalogReview();
+        } else {
+          MessageBox.error("Product not found");
+        }
       },
 
       onCancelEditDialog: function () {
@@ -974,7 +801,7 @@ sap.ui.define(
         const oUp = oEvent.getSource();
         const oFile = oEvent.getParameter("files")[0];
         const bEdit = oUp.getId().includes("edit");
-        const oDialog = bEdit
+        const oDlg = bEdit
           ? this._oEditCatalogDialog
           : this._oCreateCatalogDialog;
         const sBtn = bEdit ? "editPreviewImageButton" : "previewImageButton";
@@ -984,8 +811,8 @@ sap.ui.define(
         if (oFile) {
           this.getView().byId(sBtn).setEnabled(true);
           this._convertFileToBase64(oFile).then((sB64) => {
-            oDialog.getModel(oModel).setProperty("/productImage", sB64);
-            oDialog.getModel(oModel).setProperty("/selectedImageFile", oFile);
+            oDlg.getModel(oModel).setProperty("/productImage", sB64);
+            oDlg.getModel(oModel).setProperty("/selectedImageFile", oFile);
             const oImg = this.getView().byId(sPrev);
             if (oImg) {
               oImg.setSrc(sB64);
@@ -999,7 +826,7 @@ sap.ui.define(
         const oUp = oEvent.getSource();
         const oFile = oEvent.getParameter("files")[0];
         const bEdit = oUp.getId().includes("edit");
-        const oDialog = bEdit
+        const oDlg = bEdit
           ? this._oEditCatalogDialog
           : this._oCreateCatalogDialog;
         const sBtn = bEdit ? "editPreviewPdfButton" : "previewPdfButton";
@@ -1008,15 +835,15 @@ sap.ui.define(
         if (oFile) {
           this.getView().byId(sBtn).setEnabled(true);
           this._convertFileToBase64(oFile).then((sB64) => {
-            oDialog.getModel(oModel).setProperty("/productSpecification", sB64);
-            oDialog.getModel(oModel).setProperty("/selectedPdfFile", oFile);
+            oDlg.getModel(oModel).setProperty("/productSpecification", sB64);
+            oDlg.getModel(oModel).setProperty("/selectedPdfFile", oFile);
           });
         }
       },
 
       onRemoveImage(oEvent) {
         const bEdit = oEvent.getSource().getId().includes("edit");
-        const oDialog = bEdit
+        const oDlg = bEdit
           ? this._oEditCatalogDialog
           : this._oCreateCatalogDialog;
         const sPrev = bEdit ? "editImagePreview" : "imagePreview";
@@ -1024,8 +851,8 @@ sap.ui.define(
         const sUp = bEdit ? "editProductImageUploader" : "productImageUploader";
         const oModel = bEdit ? "oEditFormModel" : "oCreateFormModel";
 
-        oDialog.getModel(oModel).setProperty("/productImage", "");
-        oDialog.getModel(oModel).setProperty("/selectedImageFile", null);
+        oDlg.getModel(oModel).setProperty("/productImage", "");
+        oDlg.getModel(oModel).setProperty("/selectedImageFile", null);
         this.getView().byId(sBtn).setEnabled(false);
         const oImg = this.getView().byId(sPrev);
         if (oImg) {
@@ -1038,15 +865,15 @@ sap.ui.define(
 
       onRemovePdf(oEvent) {
         const bEdit = oEvent.getSource().getId().includes("edit");
-        const oDialog = bEdit
+        const oDlg = bEdit
           ? this._oEditCatalogDialog
           : this._oCreateCatalogDialog;
         const sBtn = bEdit ? "editPreviewPdfButton" : "previewPdfButton";
         const sUp = bEdit ? "editProductSpecUploader" : "productSpecUploader";
         const oModel = bEdit ? "oEditFormModel" : "oCreateFormModel";
 
-        oDialog.getModel(oModel).setProperty("/productSpecification", "");
-        oDialog.getModel(oModel).setProperty("/selectedPdfFile", null);
+        oDlg.getModel(oModel).setProperty("/productSpecification", "");
+        oDlg.getModel(oModel).setProperty("/selectedPdfFile", null);
         this.getView().byId(sBtn).setEnabled(false);
         this.getView().byId(sUp).setValue("");
         MessageToast.show("Product specification PDF removed.");
@@ -1058,10 +885,10 @@ sap.ui.define(
             res("");
             return;
           }
-          const reader = new FileReader();
-          reader.onload = (e) => res(e.target.result);
-          reader.onerror = rej;
-          reader.readAsDataURL(oFile);
+          const r = new FileReader();
+          r.onload = (e) => res(e.target.result);
+          r.onerror = rej;
+          r.readAsDataURL(oFile);
         });
       },
 
@@ -1078,10 +905,9 @@ sap.ui.define(
         const oDlg = bEdit
           ? this._oEditCatalogDialog
           : this._oCreateCatalogDialog;
-
         const oModel = bEdit ? "oEditFormModel" : "oCreateFormModel";
-        const sB64 = oDlg.getModel(oModel).getProperty("/productImage");
 
+        const sB64 = oDlg.getModel(oModel).getProperty("/productImage");
         if (!sB64) {
           MessageToast.show("Please select an image first");
           return;
@@ -1120,40 +946,26 @@ sap.ui.define(
         this._oImagePreviewDialog.open();
       },
 
-      onPreviewPdf: function (oEvent) {
+      onPreviewPdf(oEvent) {
         const bEdit = oEvent.getSource().getId().includes("edit");
         const oDlg = bEdit
           ? this._oEditCatalogDialog
           : this._oCreateCatalogDialog;
-        const sModelName = bEdit ? "oEditFormModel" : "oCreateFormModel";
-        const oModel = oDlg.getModel(sModelName);
+        const oModel = bEdit ? "oEditFormModel" : "oCreateFormModel";
 
-        const oFile = oModel.getProperty("/selectedPdfFile"); // Blob (new upload)
-        const sSpec = oModel.getProperty("/productSpecification"); // Base64 OR Azure URL
+        const oFile = oDlg.getModel(oModel).getProperty("/selectedPdfFile");
+        const sB64 = oDlg.getModel(oModel).getProperty("/productSpecification");
+        let url = null;
 
-        let sUrl = null;
-
-        // 1. New file uploaded → use Blob
-        if (oFile instanceof Blob) {
-          sUrl = URL.createObjectURL(oFile);
-        }
-        // 2. Azure URL (http/https) → use directly
-        else if (sSpec && /^https?:\/\//i.test(sSpec)) {
-          sUrl = sSpec;
-        }
-        // 3. Base64 string → convert to Blob URL
-        else if (sSpec) {
-          const a = sSpec.split(",");
-          if (a.length === 2) {
-            sUrl = this._base64ToBlobUrl(a[1], "application/pdf");
-          }
+        if (oFile instanceof Blob) url = URL.createObjectURL(oFile);
+        else if (sB64) {
+          const a = sB64.split(",");
+          if (a.length === 2)
+            url = this._base64ToBlobUrl(a[1], "application/pdf");
         }
 
-        if (sUrl) {
-          window.open(sUrl, "_blank");
-        } else {
-          MessageToast.show("No PDF available for preview.");
-        }
+        if (url) window.open(url, "_blank");
+        else MessageToast.show("No PDF available for preview.");
       },
 
       /* ------------------------------------------------------------------ */
@@ -1196,7 +1008,6 @@ sap.ui.define(
         this.getView()
           .getModel("appView")
           .setProperty("/layout", "ThreeColumnsMidExpanded");
-
         this.getOwnerComponent().getRouter().navTo("catalogReview");
       },
 

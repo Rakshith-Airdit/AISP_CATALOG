@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:unified="sap.ui.unified">
+
+    <Dialog id="bulkUploadDialog" title="Bulk Product Upload" class="sapUiContentPadding" contentWidth="800px" contentHeight="400px" verticalScrolling="false" horizontalScrolling="false" resizable="false" draggable="true" afterClose=".onDialogClose">
+
+        <beginButton>
+            <Button id="processFileButton" text="Process File" press=".onProcessFile" type="Emphasized"/>
+        </beginButton>
+        <endButton>
+            <Button text="Cancel" press=".onCloseBulkUploadDialog"/>
+        </endButton>
+
+        <customHeader>
+            <Bar>
+                <contentLeft>
+                    <Title text="Bulk Product Upload"/>
+                </contentLeft>
+            </Bar>
+        </customHeader>
+
+        <!-- MAIN CENTERED CONTAINER -->
+        <content>
+            <FlexBox direction="Column" justifyContent="Start" alignItems="Center" height="100%">
+
+                <!-- Download Template -->
+                <VBox class="bulkUploadDownloadBox sapUiSmallMargin" width="100%">
+                    <Link text="Download Template" href="#" press=".onDownloadTemplate" class="sapUiTinyMargin"/>
+                    <Text text="Download the Excel template to ensure your data is in the correct format" class="sapUiTinyMargin"/>
+                </VBox>
+
+                <!-- Upload Area -->
+                <VBox class="sapUiMediumMarginTopBottom" width="100%">
+                    <unified:FileUploader id="fileUploader" name="uploadFile" uploadUrl="/your-upload-endpoint" buttonText="" buttonOnly="false" fileType="xlsx,xls,csv" maximumFilenameLength="55" maximumFileSize="10" mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" placeholder="Drag and drop your Excel file here, or click to browse" change=".onFileChange" uploadComplete=".onUploadComplete" style="Emphasized" class="bulkUploadFileUploader"/>
+                </VBox>
+
+                <!-- File Requirements -->
+                <VBox class="bulkUploadReqBox sapUiSmallMarginTop sapUiContentPadding" width="100%">
+                    <Title text="File Requirements:" class="sapUiTinyMarginBottom"/>
+                    <Text text="• File must be in Excel (.xlsx, .xls) or CSV format"/>
+                    <Text text="• First row should contain column headers"/>
+                    <Text text="• Required fields: Product Images, Product Name, Category, Description, Search Term, Unit Price, Currency, Unit of Measure, Commodity Code, Lead Time"/>
+                    <Text text="• Maximum file size: 10MB"/>
+                </VBox>
+
+            </FlexBox>
+        </content>
+    </Dialog>
+</core:FragmentDefinition>

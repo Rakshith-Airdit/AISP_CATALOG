@@ -126,8 +126,8 @@
         },
         {
           "name": "catalogReview",
-          "pattern": "catalogReview/{selectedItemId}",
-          "target": "catalogReview"
+          "pattern": "catalogReview",
+          "target": ["TargetHome", "TargetWelcome", "catalogReview"]
         }
       ],
       "targets": {
@@ -157,6 +157,7 @@
         },
         "catalogReview": {
           "name": "CatalogReview",
+          "id": "catalogReviewPage",
           "controlAggregation": "endColumnPages"
         }
       }

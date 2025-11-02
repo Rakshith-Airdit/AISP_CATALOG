@@ -1,0 +1,29 @@
+<core:FragmentDefinition xmlns="sap.ui.comp.valuehelpdialog"
+    xmlns:m="sap.m"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:core="sap.ui.core"
+    xmlns:ui="sap.ui.table">
+
+    <ValueHelpDialog id="commodityValueHelp" title="Select Commodity Code" afterClose=".onCommodityVHAfterClose" supportMultiselect="false" key="Commodity" descriptionKey="CommodityName" ok=".onCommodityVHOk" cancel=".onCommodityVHCancel">
+
+        <filterBar>
+            <fb:FilterBar useToolbar="false" advancedMode="false" search=".onCommodityVHSearch" isRunningInValueHelpDialog="true" showFilterConfiguration="false" showRestoreButton="false">
+
+                <fb:filterGroupItems>
+                    <fb:FilterGroupItem groupName="basic" name="Commodity" label="Commodity Code" visibleInFilterBar="true">
+                        <fb:control>
+                            <m:Input value="{filters>/Commodity}" placeholder="Enter Commodity Code" />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+
+                    <fb:FilterGroupItem groupName="basic" name="CommodityName" label="Description" visibleInFilterBar="true">
+                        <fb:control>
+                            <m:Input value="{filters>/CommodityName}" placeholder="Enter Description" />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                </fb:filterGroupItems>
+            </fb:FilterBar>
+        </filterBar>
+
+    </ValueHelpDialog>
+</core:FragmentDefinition>

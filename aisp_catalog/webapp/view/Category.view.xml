@@ -23,7 +23,7 @@
                 </infoToolbar>
                 <!-- press=".onProductDetails" -->
                 <items>
-                    <ObjectListItem type="{= ${device>/system/phone} ? 'Active' : 'Inactive'}" icon="sap-icon://card" title="{categoryModel>ProductName}" number="{
+                    <ObjectListItem type="{= ${device>/system/phone} ? 'Active' : 'Inactive'}" icon="{categoryModel>ProductImage}" title="{categoryModel>ProductName}"  number="{
                             path: 'categoryModel>UnitPrice',
                             formatter: '.formatter.price'
                         }" numberUnit="{categoryModel>CurrencyCode}" iconDensityAware="false" tooltip="{i18n>openProductDetails} {categoryModel>ProductName}">
