@@ -401,7 +401,7 @@ sap.ui.define(
             {
               success: (oResult) => {
                 sap.ui.core.BusyIndicator.hide();
-                this._onBatchSubmitted(oResult);
+                this._onBatchSubmitted(oResult.submitBatch);
               },
               error: (oError) => {
                 sap.ui.core.BusyIndicator.hide();
@@ -462,6 +462,7 @@ sap.ui.define(
         //     },
         //   });
         // },
+
         _onBatchSubmitted: function (oResult) {
           const iSuccessCount = oResult.successful || 0;
           const iErrorCount = oResult.failed || 0;

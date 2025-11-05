@@ -514,9 +514,11 @@ sap.ui.define(
       onCommodityVHOk: function (oEvent) {
         this._handleValueHelpOk(oEvent, "commodityCodeInput", "/category");
       },
+
       onCurrencyVHOk: function (oEvent) {
         this._handleValueHelpOk(oEvent, "currencyInput");
       },
+
       onUomVHOk: function (oEvent) {
         this._handleValueHelpOk(oEvent, "unitOfMeasureInput");
       },
@@ -611,18 +613,23 @@ sap.ui.define(
       onCommodityVHCancel: function () {
         this._closeValueHelpDialog("_oCommodityVHDialog");
       },
+
       onCurrencyVHCancel: function () {
         this._closeValueHelpDialog("_oCurrencyVHDialog");
       },
+
       onUomVHCancel: function () {
         this._closeValueHelpDialog("_oUomVHDialog");
       },
+
       onCommodityVHAfterClose: function () {
         this._selectedValueHelpItem = null;
       },
+
       onCurrencyVHAfterClose: function () {
         this._selectedValueHelpItem = null;
       },
+
       onUomVHAfterClose: function () {
         this._selectedValueHelpItem = null;
       },
@@ -1222,6 +1229,103 @@ sap.ui.define(
             this[sDialog] = null;
           }
         });
+      },
+
+      /* ------------------------------------------------------------------ */
+      /*  MASS UPLOAD                                                       */
+      /* ------------------------------------------------------------------ */
+
+      onOpenBulkUploadDialog: function () {
+        if (!this._oBulkUploadDialog) {
+          Fragment.load({
+            id: this.getView().getId(),
+            name: "com.catalog.aispcatalog.view.fragments.BulkProductUpload",
+            controller: this,
+          }).then(
+            function (oDialog) {
+              this._oBulkUploadDialog = oDialog;
+
+              this.getView().addDependent(this._oBulkUploadDialog);
+
+              // Create a local JSON model for the dialog's state
+              const oBulkUploadModel = new JSONModel({
+                selectedBulkFile: null,
+                selectedBulkFileName: "",
+              });
+
+              this._oBulkUploadDialog.setModel(
+                oBulkUploadModel,
+                "bulkUploadView"
+              );
+
+              // Initially disable the "Process File" button
+              this.getView().byId("processFileButton").setEnabled(false);
+
+              this._oBulkUploadDialog.open();
+            }.bind(this)
+          );
+        } else {
+          this._resetBulkUploadForm();
+          this._oBulkUploadDialog.open();
+        }
+      },
+
+      onDownloadTemplate: function () {
+        MessageToast.show("Initiating template download...");
+        window.open(sTemplatePath, "_blank");
+      },
+
+      onFileChange: function (oEvent) {
+        const oUploader = oEvent.getSource();
+        const oFile = oEvent.getParameter("files")[0];
+        if (oFile) {
+          this.getView()
+            .getModel("upload")
+            .setProperty("/fileName", oFile.name);
+        }
+      },
+
+      onProcessFile: function () {
+        const oUploader = this.byId("fileUploader");
+        if (oUploader.getFileList().length > 0) {
+          oUploader.upload(); // triggers uploadComplete
+        } else {
+          MessageToast.show("Please select a file.");
+        }
+      },
+
+      onUploadComplete: function (oEvent) {
+        const iStatus = oEvent.getParameter("status");
+        if (iStatus >= 200 && iStatus < 300) {
+          MessageToast.show("Upload successful!");
+          this.byId("bulkUploadDialog").close();
+        } else {
+          MessageToast.show("Upload failed.");
+        }
+      },
+
+      onCloseBulkUploadDialog: function () {
+        if (this._oBulkUploadDialog) {
+          this._oBulkUploadDialog.close();
+          this._resetBulkUploadForm(); // Reset the form fields for next open
+        }
+      },
+
+      _resetBulkUploadForm: function () {
+        if (this._oBulkUploadDialog) {
+          const oBulkUploadViewModel =
+            this._oBulkUploadDialog.getModel("bulkUploadView");
+          if (oBulkUploadViewModel) {
+            oBulkUploadViewModel.setProperty("/selectedBulkFile", null);
+            oBulkUploadViewModel.setProperty("/selectedBulkFileName", "");
+          }
+          const oFileUploader = this.getView().byId("bulkFileUploader");
+          if (oFileUploader) {
+            oFileUploader.clear(); // Clears the file uploader's internal state
+          }
+          // Ensure the process button is disabled until a new file is selected
+          this.getView().byId("processFileButton").setEnabled(false);
+        }
       },
     });
   }
