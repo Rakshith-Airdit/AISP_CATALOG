@@ -1,6 +1,6 @@
 sap.ui.define(
   [
-    "sap/ui/core/mvc/Controller",
+    "./BaseController",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
@@ -32,7 +32,12 @@ sap.ui.define(
 
           // Handle route matched event
           this.getRouter()
-            .getRoute("catalogReview")
+            .getRoute("RouteCatalogReview")
+            .attachPatternMatched(this._onRouteMatched, this);
+
+          // Handle route matched event
+          this.getRouter()
+            .getRoute("RouteEditCatalog")
             .attachPatternMatched(this._onRouteMatched, this);
 
           // Subscribe to the global refresh event
@@ -47,7 +52,7 @@ sap.ui.define(
 
         _onRouteMatched: function (oEvent) {
           this._loadDraftItems();
-          this._setLayout("ThreeColumnsMidExpanded");
+          this._setLayout("TwoColumnsBeginExpanded");
         },
 
         _refreshFromModel: function () {
@@ -155,10 +160,6 @@ sap.ui.define(
           this._calculateTotal();
         },
 
-        _setLayout: function (sLayout) {
-          this.getView().getModel("appView").setProperty("/layout", sLayout);
-        },
-
         _calculateTotal: function () {
           const oCatalogModel = this.getView().getModel("catalog");
           const aItems = oCatalogModel.getProperty("/items") || [];
@@ -181,27 +182,63 @@ sap.ui.define(
             return;
           }
 
-          const oAppController = this.getOwnerComponent()
-            .getRootControl()
-            .getController();
-          oAppController.openEditCatalogDialog(oProduct);
+          // Navigate to edit mode - create form on left, current review on right
+          this.getRouter().navTo("RouteEditCatalog", {
+            id: oProduct.id,
+          });
+
+          // const oAppController = this.getOwnerComponent()
+          //   .getRootControl()
+          //   .getController();
+          // oAppController.openEditCatalogDialog(oProduct);
         },
 
         onDeleteProduct: function (oEvent) {
           const oContext = oEvent.getSource().getBindingContext("catalog");
           const oProduct = oContext.getObject();
+          const oRouter = this.getRouter();
+          const oRouterHash = oRouter.getHashChanger().getHash();
 
           MessageBox.confirm(
             `Are you sure you want to remove "${oProduct.productName}" from drafts?`,
             {
               title: "Remove Draft",
-              onClose: (oAction) => {
+              onClose: async (oAction) => {
                 if (oAction === MessageBox.Action.OK) {
+                  // Check if we need to navigate first
+                  if (oRouterHash.split("/").includes("edit")) {
+                    let oProductID = oRouterHash.split("/")[1];
+                    if (
+                      oProduct.draftId === oProductID ||
+                      oProduct.id === oProductID
+                    ) {
+                      // Navigate and wait for completion
+                      await this._navigateAndWait("RouteCatalogReview");
+                      // Now delete after navigation is complete
+                      this._deleteDraftItem(oProduct);
+                      return;
+                    }
+                  }
+                  // If no navigation needed, delete immediately
                   this._deleteDraftItem(oProduct);
                 }
               },
             }
           );
+        },
+
+        _navigateAndWait: function (sRoute) {
+          return new Promise((resolve) => {
+            const oRouter = this.getRouter();
+            const fnHandler = (oEvent) => {
+              if (oEvent.getParameter("name") === sRoute) {
+                oRouter.detachRouteMatched(fnHandler, this);
+                resolve();
+              }
+            };
+            oRouter.attachRouteMatched(fnHandler, this);
+            oRouter.navTo(sRoute);
+          });
         },
 
         _deleteDraftItem: function (oProduct) {
@@ -308,90 +345,6 @@ sap.ui.define(
           // Show global busy indicator
           sap.ui.core.BusyIndicator.show(0);
 
-          // Create promises for all items
-          // const aPromises = aItems.map((oItem) => {
-          //   const oCatalogItem = {
-          //     ProductName: oItem.productName,
-          //     CommodityCode: parseInt(oItem.commodityCode),
-          //     Category: oItem.category,
-          //     SearchTerm: oItem.searchTerms,
-          //     UnitPrice: oItem.unitPrice,
-          //     CurrencyCode: oItem.currency,
-          //     UnitOfMeasure: oItem.unitOfMeasure,
-          //     LeadTimeDays: oItem.leadTime,
-          //     PartNumber: oItem.partNumber,
-          //     AdditionalLink: oItem.additionalLink,
-          //     ProductDescription: oItem.productDescription,
-          //     ProductImage: oItem.ProductImage,
-          //     ProductSpecification: oItem.ProductSpecification,
-          //   };
-
-          //   return new Promise((resolve) => {
-          //     oModel.create("/ProductCatalogItems", oCatalogItem, {
-          //       success: (oData) => {
-          //         // Delete the draft after successful submission if it exists
-          //         if (oItem.draftId) {
-          //           oModel.remove(`/ProductCatalogDrafts(${oItem.draftId})`, {
-          //             success: () => {
-          //               aResults.push({
-          //                 status: "success",
-          //                 name: oItem.productName,
-          //                 message: "Successfully submitted to catalog",
-          //               });
-          //               resolve();
-          //             },
-          //             error: () => {
-          //               aResults.push({
-          //                 status: "success",
-          //                 name: oItem.productName,
-          //                 message: "Submitted to catalog but draft not deleted",
-          //               });
-          //               resolve();
-          //             },
-          //           });
-          //         } else {
-          //           aResults.push({
-          //             status: "success",
-          //             name: oItem.productName,
-          //             message: "Successfully submitted to catalog",
-          //           });
-          //           resolve();
-          //         }
-          //       },
-          //       error: (oError) => {
-          //         let sErrorMessage = "Unknown error";
-          //         try {
-          //           const oErrorResponse = JSON.parse(oError.responseText);
-          //           sErrorMessage =
-          //             oErrorResponse.error.message.value || sErrorMessage;
-          //         } catch (e) {
-          //           sErrorMessage = oError.message || sErrorMessage;
-          //         }
-
-          //         aResults.push({
-          //           status: "error",
-          //           name: oItem.productName,
-          //           message: sErrorMessage,
-          //         });
-          //         resolve();
-          //       },
-          //     });
-          //   });
-          // });
-
-          // Promise.allSettled(aPromises)
-          //   .then(() => {
-          //     sap.ui.core.BusyIndicator.hide();
-          //     this._onAllItemsSubmitted(aResults);
-          //   })
-          //   .catch((oError) => {
-          //     sap.ui.core.BusyIndicator.hide();
-          //     console.error("Unexpected error during submission:", oError);
-          //     MessageBox.error(
-          //       "An unexpected error occurred during submission"
-          //     );
-          //   });
-
           // Use the submitBatch action with correct format
           oModel.create(
             "/submitBatch",
@@ -421,47 +374,6 @@ sap.ui.define(
             }
           );
         },
-
-        // _onAllItemsSubmitted: function (aResults) {
-        //   const iSuccessCount = aResults.filter(
-        //     (r) => r.status === "success"
-        //   ).length;
-        //   const iErrorCount = aResults.filter(
-        //     (r) => r.status === "error"
-        //   ).length;
-
-        //   let sMessage = `Submission Complete:\n${iSuccessCount} item(s) submitted successfully.\n${iErrorCount} item(s) failed.`;
-
-        //   if (iErrorCount > 0) {
-        //     sMessage += "\n\nFailed items:\n";
-        //     aResults
-        //       .filter((r) => r.status === "error")
-        //       .forEach((error) => {
-        //         sMessage += `- ${error.name}: ${error.message}\n`;
-        //       });
-        //   }
-
-        //   MessageBox.show(sMessage, {
-        //     icon:
-        //       iErrorCount > 0
-        //         ? MessageBox.Icon.WARNING
-        //         : MessageBox.Icon.SUCCESS,
-        //     title: "Submission Result",
-        //     actions: [MessageBox.Action.OK],
-        //     onClose: () => {
-        //       // Clear all data after submission
-        //       const oCatalogModel = this.getView().getModel("catalog");
-        //       oCatalogModel.setProperty("/items", []);
-
-        //       const oLocalStorageModel =
-        //         this.getOwnerComponent().getModel("catalog");
-        //       oLocalStorageModel.clearData();
-
-        //       // Navigate back to home
-        //       this.onNavigateBack();
-        //     },
-        //   });
-        // },
 
         _onBatchSubmitted: function (oResult) {
           const iSuccessCount = oResult.successful || 0;

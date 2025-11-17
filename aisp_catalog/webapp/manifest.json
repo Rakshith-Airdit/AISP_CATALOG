@@ -125,9 +125,19 @@
           "target": ["TargetCategory", "TargetProduct"]
         },
         {
-          "name": "catalogReview",
+          "name": "RouteCreateCatalog",
+          "pattern": "createCatalog",
+          "target": ["TargetCreateCatalog", "TargetProduct"]
+        },
+        {
+          "name": "RouteCatalogReview",
           "pattern": "catalogReview",
-          "target": ["TargetHome", "TargetWelcome", "catalogReview"]
+          "target": ["TargetCreateCatalog", "TargetCatalogReview"]
+        },
+        {
+          "name": "RouteEditCatalog",
+          "pattern": "edit/{id}",
+          "target": ["TargetEditCatalog", "TargetCatalogReview"]
         }
       ],
       "targets": {
@@ -155,10 +165,22 @@
           "id": "product",
           "controlAggregation": "midColumnPages"
         },
-        "catalogReview": {
+        "TargetCreateCatalog": {
+          "name": "CreateCatalog",
+          "id": "createCatalog",
+          "controlAggregation": "beginColumnPages",
+          "transition": "slide"
+        },
+        "TargetEditCatalog": {
+          "name": "EditCatalog",
+          "id": "editCatalog",
+          "controlAggregation": "beginColumnPages",
+          "transition": "slide"
+        },
+        "TargetCatalogReview": {
           "name": "CatalogReview",
           "id": "catalogReviewPage",
-          "controlAggregation": "endColumnPages"
+          "controlAggregation": "midColumnPages"
         }
       }
     },

@@ -13,18 +13,17 @@
                     <OverflowToolbar>
                         <Title text="{i18n>allProductsTitle}" level="H2" />
                         <ToolbarSpacer />
-                        <Text text="Total: {view>/AllProducts/length} products" visible="{= !!${view>/AllProducts/length}}" class="sapUiTinyMarginEnd" />
+                        <Text text="Total: {oProductsModel>/products/length} products" visible="{= !!${oProductsModel>/products/length}}" class="sapUiTinyMarginEnd" />
                     </OverflowToolbar>
                 </headerToolbar>
 
                 <!-- Illustrated Message that takes full available height -->
-                <VBox height="100%" justifyContent="Center" alignItems="Center" visible="{= !${view>/AllProducts/length}}">
+                <VBox height="100%" justifyContent="Center" alignItems="Center" visible="{= !${oProductsModel>/products/length}}">
                     <IllustratedMessage id="noDataMessage" title="{i18n>noProductsAvailable}" description="{i18n>noProductsDescription}" illustrationType="sapIllus-NoData" illustrationSize="Auto" />
                 </VBox>
 
                 <!-- Products Grid -->
-                <!-- Products Grid -->
-                <f:GridList id="productGrid" items="{view>/AllProducts}" mode="None" width="100%" visible="{= !!${view>/AllProducts/length}}" class="sapUiSmallMarginTop">
+                <f:GridList id="productGrid" items="{oProductsModel>/products}" mode="None" width="100%" visible="{= !!${oProductsModel>/products/length}}" class="sapUiSmallMarginTop">
                     <f:customLayout>
                         <grid:GridBoxLayout boxMinWidth="18rem" />
                     </f:customLayout>
@@ -33,27 +32,27 @@
                         <f:Card class="sapUiContentPadding" height="100%">
                             <f:content>
                                 <VBox class="sapUiSmallMargin" height="100%" width="100%">
-                                    <Image src="{view>ProductImage}" alt="{view>ProductName}" width="100%" height="10rem" class="sapUiSmallMarginBottom" />
+                                    <Image src="{oProductsModel>ProductImage}" alt="{oProductsModel>ProductName}" width="100%" height="10rem" class="sapUiSmallMarginBottom" />
                                     <core:HTML content="&lt;hr style='border-top: 1px solid #e0e0e0;'&gt;" />
-                                    <Title text="{view>ProductName}" wrapping="true" class="sapUiSmallMarginBottom" />
-                                    <!-- <ObjectStatus text="{view>Category}" state="Success" inverted="true" class="sapUiTinyMarginBottom" /> -->
-                                    <GenericTag text="{view>Category}" design="StatusIconHidden" status="Success" class="sapUiSmallMarginBottom" />
-                                    <Text text="{view>ProductDescription}" wrapping="true" class="sapUiSmallMarginBottom" maxLines="3" />
+                                    <Title text="{oProductsModel>ProductName}" wrapping="true" class="sapUiSmallMarginBottom" />
+                                    <!-- <ObjectStatus text="{oProductsModel>Category}" state="Success" inverted="true" class="sapUiTinyMarginBottom" /> -->
+                                    <GenericTag text="{oProductsModel>Category}" design="StatusIconHidden" status="Success" class="sapUiSmallMarginBottom" />
+                                    <Text text="{oProductsModel>ProductDescription}" wrapping="true" class="sapUiSmallMarginBottom" maxLines="3" />
                                     <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
                                         <Text text="Unit Price" />
-                                        <ObjectNumber number="{path: 'view>UnitPrice', type: 'sap.ui.model.type.Float', formatOptions: { minFractionDigits: 2, maxFractionDigits: 2 }}" unit="{view>CurrencyCode}" state="Success" emphasized="true" />
+                                        <ObjectNumber number="{path: 'oProductsModel>UnitPrice', type: 'sap.ui.model.type.Float', formatOptions: { minFractionDigits: 2, maxFractionDigits: 2 }}" unit="{oProductsModel>CurrencyCode}" state="Success" emphasized="true" />
                                     </HBox>
                                     <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                                        <Text text="Per Each" />
-                                        <Text text="{view>UnitOfMeasure}" />
+                                        <Text text="UOM" />
+                                        <Text text="{oProductsModel>UnitOfMeasure}" />
                                     </HBox>
                                     <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
                                         <Text text="Code:" />
-                                        <Text text="{view>CommodityCode}" />
+                                        <Text text="{oProductsModel>CommodityCode}" />
                                     </HBox>
                                     <HBox justifyContent="SpaceBetween">
                                         <Text text="Part #:" />
-                                        <Text text="{view>PartNumber}" />
+                                        <Text text="{oProductsModel>PartNumber}" />
                                     </HBox>
                                 </VBox>
                             </f:content>

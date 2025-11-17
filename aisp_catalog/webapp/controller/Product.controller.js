@@ -74,6 +74,50 @@ sap.ui.define(
         });
       },
 
+      // In Product.controller.js
+      onPreviewSpecification: function () {
+        const oModel = this.getView().getModel("productModel");
+        const sPdfUrl = oModel.getProperty("/ProductSpecification");
+
+        if (!sPdfUrl) {
+          sap.m.MessageToast.show("No product specification available");
+          return;
+        }
+
+        try {
+          // Open the PDF in a new tab
+          window.open(sPdfUrl, "_blank", "noopener,noreferrer");
+        } catch (oError) {
+          console.error("Failed to open PDF:", oError);
+          sap.m.MessageToast.show("Failed to open specification document");
+        }
+      },
+
+      onDownloadSpecification: function () {
+        const oModel = this.getView().getModel("productModel");
+        const sPdfUrl = oModel.getProperty("/ProductSpecification");
+
+        if (!sPdfUrl) {
+          sap.m.MessageToast.show("No product specification available");
+          return;
+        }
+
+        try {
+          // Create a temporary anchor element to trigger download
+          const a = document.createElement("a");
+          a.href = sPdfUrl;
+          a.download = "Product_Specification.pdf";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          sap.m.MessageToast.show("Specification download started");
+        } catch (oError) {
+          console.error("Failed to download PDF:", oError);
+          sap.m.MessageToast.show("Failed to download specification document");
+        }
+      },
+
       onBack: function () {
         this._router.navTo("category", {
           id: this._getCurrentCategory(),
@@ -135,6 +179,137 @@ sap.ui.define(
             Discontinued: "None",
           };
           return statusMap[sStatus] || "None";
+        },
+        // In your formatter file
+        getFileIcon: function (sUrl) {
+          if (!sUrl) return "sap-icon://document";
+
+          try {
+            const sFileName = sUrl.toLowerCase();
+            if (sFileName.includes(".pdf")) {
+              return "sap-icon://pdf-attachment";
+            } else if (
+              sFileName.includes(".doc") ||
+              sFileName.includes(".docx")
+            ) {
+              return "sap-icon://doc-attachment";
+            } else if (
+              sFileName.includes(".xls") ||
+              sFileName.includes(".xlsx")
+            ) {
+              return "sap-icon://excel-attachment";
+            } else {
+              return "sap-icon://document";
+            }
+          } catch (oError) {
+            return "sap-icon://document";
+          }
+        },
+
+        getFileTypeText: function (sUrl) {
+          if (!sUrl) return "Document not available";
+
+          try {
+            const sFileName = sUrl.toLowerCase();
+            if (sFileName.includes(".pdf")) {
+              return "PDF Document";
+            } else if (
+              sFileName.includes(".doc") ||
+              sFileName.includes(".docx")
+            ) {
+              return "Word Document";
+            } else if (
+              sFileName.includes(".xls") ||
+              sFileName.includes(".xlsx")
+            ) {
+              return "Excel Spreadsheet";
+            } else {
+              return "Document File";
+            }
+          } catch (oError) {
+            return "Document File";
+          }
+        },
+
+        getFileNameFromUrl: function (sUrl) {
+          if (!sUrl) return "No specification available";
+
+          try {
+            const sFileName = sUrl.split("/").pop();
+            if (!sFileName) return "Product Specification";
+
+            // Decode URL-encoded characters and remove query parameters
+            let sDecodedName = decodeURIComponent(sFileName);
+            sDecodedName = sDecodedName.split("?")[0]; // Remove query parameters
+
+            // If it's a UUID-based filename, provide a friendly name
+            if (
+              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}_/i.test(
+                sDecodedName
+              )
+            ) {
+              // Extract the part after UUID and underscore
+              const sFriendlyName = sDecodedName.split("_").pop();
+              return sFriendlyName || "Product Specification";
+            }
+
+            return sDecodedName;
+          } catch (oError) {
+            return "Product Specification";
+          }
+        },
+
+        getFileTypeText: function (sUrl) {
+          if (!sUrl) return "Document not available";
+
+          try {
+            const sFileName = sUrl.toLowerCase();
+            if (sFileName.includes(".pdf")) {
+              return "PDF Document";
+            } else if (
+              sFileName.includes(".doc") ||
+              sFileName.includes(".docx")
+            ) {
+              return "Word Document";
+            } else if (
+              sFileName.includes(".xls") ||
+              sFileName.includes(".xlsx")
+            ) {
+              return "Excel Spreadsheet";
+            } else {
+              return "Document File";
+            }
+          } catch (oError) {
+            return "Document File";
+          }
+        },
+
+        getFileNameFromUrl: function (sUrl) {
+          if (!sUrl) return "No specification available";
+
+          try {
+            const sFileName = sUrl.split("/").pop();
+            if (!sFileName) return "Product Specification";
+
+            // Decode URL-encoded characters and remove query parameters
+            let sDecodedName = decodeURIComponent(sFileName);
+            sDecodedName = sDecodedName.split("?")[0]; // Remove query parameters
+
+            // If it's a UUID-based filename, provide a friendly name
+            if (
+              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}_/i.test(
+                sDecodedName
+              )
+            ) {
+              // Extract the part after UUID and underscore
+              const sFriendlyName = sDecodedName.split("_").pop();
+              return sFriendlyName || "Product Specification";
+            }
+
+            return sDecodedName;
+          } catch (oError) {
+            return "Product Specification";
+          }
         },
       },
     });

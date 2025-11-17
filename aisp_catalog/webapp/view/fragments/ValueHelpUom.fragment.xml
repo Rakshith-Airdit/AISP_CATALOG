@@ -3,21 +3,14 @@
     xmlns:fb="sap.ui.comp.filterbar"
     xmlns:core="sap.ui.core">
 
-    <ValueHelpDialog id="uomValueHelp" title="Select Unit of Measure" ok=".onUomVHOk" cancel=".onUomVHCancel" supportMultiselect="false" key="UnitCode" descriptionKey="Text">
+    <ValueHelpDialog id="uomValueHelp" title="Select Unit of Measure" afterClose=".onUomVHAfterClose" supportMultiselect="false" key="UnitCode" descriptionKey="Text" ok=".onUomVHOk" cancel=".onUomVHCancel" contentWidth="800px" contentHeight="800px" verticalScrolling="false" horizontalScrolling="false">
 
         <filterBar>
-            <fb:FilterBar useToolbar="false" advancedMode="false" search=".onUomVHSearch" isRunningInValueHelpDialog="true" showFilterConfiguration="false" showRestoreButton="false" showClearButton="true">
-
+            <fb:FilterBar useToolbar="false" advancedMode="false" search=".onUomVHSearch" isRunningInValueHelpDialog="true" showFilterConfiguration="false" showRestoreButton="false">
                 <fb:filterGroupItems>
-                    <fb:FilterGroupItem groupName="basic" name="UnitCode" label="Unit Code" visibleInFilterBar="true">
+                    <fb:FilterGroupItem groupName="basic" name="search" label="Search Unit Code or Description" visibleInFilterBar="true">
                         <fb:control>
-                            <m:Input value="{/filters/UnitCode}" placeholder="Enter Unit Code" />
-                        </fb:control>
-                    </fb:FilterGroupItem>
-
-                    <fb:FilterGroupItem groupName="basic" name="Text" label="Description" visibleInFilterBar="true">
-                        <fb:control>
-                            <m:Input value="{/filters/Text}" placeholder="Enter Unit Description" />
+                            <m:Input value="{filters>/search}" placeholder="Enter Unit Code or Description" liveChange=".onUomVHLiveChange"/>
                         </fb:control>
                     </fb:FilterGroupItem>
                 </fb:filterGroupItems>

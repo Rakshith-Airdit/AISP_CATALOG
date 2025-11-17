@@ -18,17 +18,12 @@
                         </layoutData>
                     </Title>
                     <ToolbarSpacer />
-                    <!-- <Avatar src="test-resources/sap/tnt/images/Woman_avatar_01.png" displaySize="XS" press=".onAvatarPressed" tooltip="Profile">
-                        <layoutData>
-                            <OverflowToolbarLayoutData priority="NeverOverflow"/>
-                        </layoutData>
-                    </Avatar> -->
 
                     <Button text="Bulk Upload" type="Default" icon="sap-icon://upload" class="sapUiTinyMarginEnd" press="onOpenBulkUploadDialog">
                     </Button>
-                    <Button text="Create Catalog Item" type="Emphasized" icon="sap-icon://add" class="sapUiTinyMarginEnd" press="onCreateCatalog">
+                    <Button text="Create" type="Emphasized" icon="sap-icon://add" class="sapUiTinyMarginEnd" press="onCreateCatalog">
                     </Button>
-                    <Button text="Added Catalog Items" type="Emphasized" icon="sap-icon://cart" class="sapUiTinyMarginEnd" press="_navigateToCatalogReview" visible="{= ${catalog>/catalogItems}.length > 0 }">
+                    <Button text="Draft" type="Emphasized" icon="sap-icon://cart" class="sapUiTinyMarginEnd" press="_navigateToCatalogReview" visible="{= ${catalog>/catalogItems}.length > 0 }">
                     </Button>
                 </tnt:ToolHeader>
             </customHeader>

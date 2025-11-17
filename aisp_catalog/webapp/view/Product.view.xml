@@ -1,6 +1,7 @@
 <mvc:View controllerName="com.catalog.aispcatalog.controller.Product"
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
     xmlns:form="sap.ui.layout.form"
     xmlns:l="sap.ui.layout">
     <Page id="productPage" backgroundDesign="Solid" title="{productModel>/ProductName}">
@@ -64,6 +65,29 @@
 
                     <Label text="Description:" class="sapUiSmallMarginTopBottom" design="Bold"/>
                     <Text text="{productModel>/ProductDescription}" wrapping="true" class="sapUiSmallMarginBottom" />
+
+                    <!-- Product Specification Section -->
+                    <Label text="Product Specification:" class="sapUiSmallMarginTopBottom" design="Bold"/>
+                    <HBox alignItems="Center" class="sapUiSmallMarginBottom">
+                        <!-- Show different icons based on file type -->
+                        <core:Icon class="sapMUSTItemImage sapMUSTItemIcon" src="{
+            path: 'productModel>/ProductSpecification',
+            formatter: '.formatter.getFileIcon'
+        }" visible="{= !!${productModel>/ProductSpecification}}" />
+
+                        <!-- Show placeholder icon if no specification -->
+                        <core:Icon src="sap-icon://document" class="sapMUSTItemImage sapMUSTItemIcon" visible="{= !${productModel>/ProductSpecification}}" />
+
+                        <VBox class="sapUiTinyMargin sapUiSmallMarginBegin">
+                            <Text text="{
+                path: 'productModel>/ProductSpecification',
+                formatter: '.formatter.getFileNameFromUrl'
+            }" class="sapUiTinyMarginBottom" visible="{= !!${productModel>/ProductSpecification}}" />
+                            <!-- Show placeholder text if no specification -->
+                            <Text text="No specification available" class="sapUiTinyMarginBottom" visible="{= !${productModel>/ProductSpecification}}" />
+                            <Button text="Preview" type="Transparent" press="onPreviewSpecification" enabled="{= !!${productModel>/ProductSpecification}}" />
+                        </VBox>
+                    </HBox>
 
                     <Label text="Additional Link:" class="sapUiSmallMarginTopBottom" design="Bold"/>
                     <Link text="{productModel>/AdditionalLink}" href="{productModel>/AdditionalLink}" target="_blank" />

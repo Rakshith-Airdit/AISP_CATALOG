@@ -24,24 +24,16 @@ sap.ui.define(
     return BaseController.extend("com.catalog.aispcatalog.controller.Home", {
       onInit: function () {
         const oComponent = this.getOwnerComponent();
-        this._router = oComponent.getRouter();
+        this._router = this.getRouter();
 
         // Initialize models
-        this._setModel("oCommodityCodesModel", []);
-        this._setModel("oProductItemsModel", []);
+        this.setModel(new JSONModel([]), "oCommodityCodesModel");
+        this.setModel(new JSONModel([]), "oProductItemsModel");
 
         // Attach route matched event
         this._router
           .getRoute("RouteHome")
           .attachMatched(this._onRouteMatched, this);
-
-        this._router
-          .getRoute("catalogReview")
-          .attachMatched(this._onRouteMatched, this);
-      },
-
-      _setModel: function (sName, oData) {
-        this.getView().setModel(new JSONModel(oData), sName);
       },
 
       _onRouteMatched: function () {
@@ -62,7 +54,7 @@ sap.ui.define(
         oModel.read("/ProductCatalogCommodityCodes", {
           success: (oData) => {
             const results = oData.results || oData;
-            this.getView().getModel("oCommodityCodesModel").setData(results);
+            this.getModel("oCommodityCodesModel").setData(results);
             this.getView().setBusy(false);
           },
           error: (oError) => {
@@ -73,24 +65,7 @@ sap.ui.define(
         });
       },
 
-      onSearch: function (oEvent) {
-        this._search();
-      },
-
-      onRefresh: function (oEvent) {
-        // Trigger search again and hide pullToRefresh when data ready
-        const oProductList = this.byId("productList");
-        const oCategoryList = this.byId("categoryList");
-        const oBinding = oCategoryList.getBinding("items");
-        const fnHandler = () => {
-          this.byId("pullToRefresh").hide();
-          oBinding.detachDataReceived(fnHandler);
-        };
-        oBinding.attachDataReceived(fnHandler);
-        this._search();
-      },
-
-      _search: function () {
+      onSearch: function () {
         const oView = this.getView();
         const oCategoryList = oView.byId("categoryList");
         const oProductList = oView.byId("productList");
@@ -105,14 +80,28 @@ sap.ui.define(
           this._loadSearchResults(oSearchField.getValue());
         } else {
           // Clear product list when search is empty
-          this.getView().getModel("oProductItemsModel").setData([]);
+          this.getModel("oProductItemsModel").setData([]);
         }
       },
+
+      // Trigger search again and hide pullToRefresh when data ready
+      // onRefresh: function (oEvent) {
+      //   const oProductList = this.byId("productList");
+      //   const oCategoryList = this.byId("categoryList");
+      //   const oBinding = oCategoryList.getBinding("items");
+      //   const fnHandler = () => {
+      //     this.byId("pullToRefresh").hide();
+      //     oBinding.detachDataReceived(fnHandler);
+      //   };
+      //   oBinding.attachDataReceived(fnHandler);
+      //   this.onSearch();
+      // },
 
       _loadSearchResults: function (sQuery) {
         this.getView().setBusy(true);
 
         const oModel = this.getOwnerComponent().getModel();
+
         const aFilters = [
           new Filter("ProductName", FilterOperator.Contains, sQuery),
         ];
@@ -121,7 +110,7 @@ sap.ui.define(
           filters: aFilters,
           success: (oData) => {
             const results = oData.results || oData;
-            this.getView().getModel("oProductItemsModel").setData(results);
+            this.getModel("oProductItemsModel").setData(results);
             this.getView().setBusy(false);
           },
           error: (oError) => {
@@ -134,9 +123,11 @@ sap.ui.define(
 
       onCategoryListItemPress: function (oEvent) {
         const oSource = oEvent.getSource();
+
         const oBindingContext = oSource.getBindingContext(
           "oCommodityCodesModel"
         );
+
         const sCommdityCode = oBindingContext.getProperty("Commodity");
         const sCategoryName = oBindingContext.getProperty("CommodityName");
 
@@ -149,11 +140,6 @@ sap.ui.define(
         });
       },
 
-      onProductListSelect: function (oEvent) {
-        const oItem = oEvent.getParameter("listItem");
-        this._showProduct(oItem);
-      },
-
       onProductListItemPress: function (oEvent) {
         const oSource = oEvent.getSource();
         const oSelectedItem = oSource.getSelectedItem();
@@ -164,32 +150,11 @@ sap.ui.define(
 
         debugger;
 
-        // // Navigate to category detail page
-        // this._router.navTo("RouteCategory", {
-        //   id: sCategoryId,
-        //   categoryName: sCategoryName,
-        // });
-
         this._router.navTo(
           "RouteProduct",
           {
             id: sCategoryId,
             productId: sProductId,
-          },
-          !Device.system.phone
-        );
-      },
-
-      _showProduct: function (oItem) {
-        const oEntry = oItem
-          .getBindingContext("oProductItemsModel")
-          .getObject();
-
-        this._router.navTo(
-          "product",
-          {
-            id: oEntry.Category,
-            productId: oEntry.ProductId || oEntry.ID,
           },
           !Device.system.phone
         );
@@ -213,7 +178,7 @@ sap.ui.define(
         const oSearchField = this.byId("searchField");
         if (oSearchField.getValue()) {
           oSearchField.setValue("");
-          this._search();
+          this.onSearch();
         }
       },
 

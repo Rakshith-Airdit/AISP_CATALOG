@@ -1,0 +1,190 @@
+<mvc:View controllerName="com.catalog.aispcatalog.controller.CreateCatalog"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout"
+    xmlns:u="sap.ui.unified"
+    xmlns:core="sap.ui.core" displayBlock="true">
+    <Page id="createCatalogPage" title="Create Product Catalog" showNavButton="true" navButtonPress=".onNavigateBack">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Title text="Product Details" level="H2" class="sapUiSmallMarginBottom" />
+
+                <l:Grid defaultSpan="L6 M6 S12" class="sapUiSmallMarginBottom">
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Product Name" required="true" />
+                        <Input value="{oCreateFormModel>/productName}" placeholder="Enter product name" width="100%" valueState="{oCreateFormModel>/productNameValueState}" valueStateText="{oCreateFormModel>/productNameValueStateText}" liveChange=".onFieldLiveChange"/>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Commodity Code (UNSPSC)" required="true" />
+                        <!-- <ComboBox items="{appView>/commodityCodes}" selectedKey="{oCreateFormModel>/commodityCode}" change="onCommodityCodeChange" placeholder="Select commodity code" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
+                        </ComboBox> -->
+                        <!-- <Input id="commodityCodeInput" value="{oCreateFormModel>/commodityCode}" placeholder="Select Commodity Code" showValueHelp="true" valueHelpRequest="onCommodityCodeValueHelp" showSuggestion="true" enableSuggestionsHighlighting="true" suggest="onCommoditySuggestion" width="100%" suggestionItems="{/ProductCatalogCommodityCodes}" suggestionItemSelected="onCommoditySuggestionSelect" liveChange="onCommodityCodeChange" valueState="{oCreateFormModel>/commodityCodeValueState}" valueStateText="{oCreateFormModel>/commodityCodeValueStateText}">
+                            <suggestionItems>
+                                <core:Item text="{Commodity}" />
+                                <core:Item text="{CommodityName}" />
+                            </suggestionItems>
+                        </Input> -->
+                        <Input id="commodityCodeInput" value="{oCreateFormModel>/commodityCode}" placeholder="Select Commodity Code" showValueHelp="true" valueHelpRequest="onCommodityCodeValueHelp" showSuggestion="true" enableSuggestionsHighlighting="true" suggest="onCommoditySuggestion" width="100%" suggestionRows="{/ProductCatalogCommodityCodes}" suggestionItemSelected="onCommoditySuggestionSelect" liveChange="onCommodityCodeChange" valueState="{oCreateFormModel>/commodityCodeValueState}" valueStateText="{oCreateFormModel>/commodityCodeValueStateText}">
+                            <suggestionColumns>
+                                <Column hAlign="Begin" width="6rem">
+                                    <Label text="Commodity Code"/>
+                                </Column>
+                                <Column hAlign="Begin" minScreenWidth="Tablet" demandPopin="true">
+                                    <Label text="Commodity Name"/>
+                                </Column>
+                            </suggestionColumns>
+                            <suggestionRows>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{Commodity}"/>
+                                        <Text text="{CommodityName}"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </suggestionRows>
+                        </Input>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Category" required="true" />
+                        <Input value="{oCreateFormModel>/category}" placeholder="Category will be auto-filled" width="100%" editable="false" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Search Term" required="true" />
+                        <!-- liveChange="onSearchTermLiveChange" -->
+                        <MultiInput id="searchTermsInput" showValueHelp="false" showSuggestion="false" change="onSearchTermChange" width="100%" placeholder="Enter search keywords (press Enter after each keyword)" tokens="{path: 'oCreateFormModel>/searchTerms'}" tokenUpdate="onSearchTermTokenUpdate" valueState="{oCreateFormModel>/searchTermsValueState}" valueStateText="{oCreateFormModel>/searchTermsValueStateText}" submit="onSearchTermLiveChange">
+                            <tokens>
+                                <Token key="{oCreateFormModel>}" text="{oCreateFormModel>}" />
+                            </tokens>
+                        </MultiInput>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Unit Price" required="true" />
+                        <Input type="Number" value="{oCreateFormModel>/unitPrice}" placeholder="Enter unit price" width="100%" valueState="{oCreateFormModel>/unitPriceValueState}" valueStateText="{oCreateFormModel>/unitPriceValueStateText}" liveChange=".onFieldLiveChange"/>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Currency" required="true" />
+                        <!-- <ComboBox items="{appView>/currencies}" selectedKey="{oCreateFormModel>/currency}" placeholder="Select currency" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
+                        </ComboBox> -->
+                        <!-- <Input id="currencyInput" value="{oCreateFormModel>/currency}" placeholder="Select currency" showValueHelp="true" showSuggestion="true" valueHelpRequest="onCurrencyValueHelp" width="100%" suggest="onCurrencySuggestion" suggestionItems="{/Currencies}" suggestionItemSelected="onCurrencySuggestionSelect" valueState="{oCreateFormModel>/currencyValueState}" valueStateText="{oCreateFormModel>/currencyValueStateText}" liveChange=".onFieldLiveChange">
+                            <suggestionItems>
+                                <core:Item text="{WAERS}" />
+                                <core:Item text="{LTEXT}" />
+                            </suggestionItems>
+                        </Input> -->
+                        <Input id="currencyInput" value="{oCreateFormModel>/currency}" placeholder="Select currency" showValueHelp="true" showSuggestion="true" valueHelpRequest="onCurrencyValueHelp" width="100%" suggest="onCurrencySuggestion" suggestionRows="{/Currencies}" suggestionItemSelected="onCurrencySuggestionSelect" valueState="{oCreateFormModel>/currencyValueState}" valueStateText="{oCreateFormModel>/currencyValueStateText}" liveChange=".onFieldLiveChange">
+                            <suggestionColumns>
+                                <Column hAlign="Begin" width="5rem">
+                                    <Label text="Currency Code"/>
+                                </Column>
+                                <Column hAlign="Begin" minScreenWidth="Tablet" demandPopin="true">
+                                    <Label text="Description"/>
+                                </Column>
+                            </suggestionColumns>
+                            <suggestionRows>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{WAERS}"/>
+                                        <Text text="{LTEXT}"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </suggestionRows>
+                        </Input>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Unit of Measure" required="true" />
+                        <!-- <ComboBox items="{appView>/unitsOfMeasure}" selectedKey="{oCreateFormModel>/unitOfMeasure}" placeholder="Select unit of measure" width="100%">
+                            <core:Item key="{appView>key}" text="{appView>text}" />
+                        </ComboBox> -->
+                        <!-- <Input id="unitOfMeasureInput" value="{oCreateFormModel>/unitOfMeasure}" placeholder="Select unit of measure" showValueHelp="true" showSuggestion="true" valueHelpRequest="onUnitOfMeasureValueHelp" width="100%" suggest="onUnitOfMeasureSuggestion" suggestionItems="{/UnitsOfMeasure}" suggestionItemSelected="onUOMSuggestionSelect" valueState="{oCreateFormModel>/unitOfMeasureValueState}" valueStateText="{oCreateFormModel>/unitOfMeasureValueStateText}" liveChange=".onFieldLiveChange">
+                            <suggestionItems>
+                                <core:Item text="{UnitCode}" />
+                                <core:Item text="{Text}" />
+                            </suggestionItems>
+                        </Input> -->
+                        <Input id="unitOfMeasureInput" value="{oCreateFormModel>/unitOfMeasure}" placeholder="Select unit of measure" showValueHelp="true" showSuggestion="true" valueHelpRequest="onUnitOfMeasureValueHelp" width="100%" suggest="onUnitOfMeasureSuggestion" suggestionRows="{/UnitsOfMeasure}" suggestionItemSelected="onUOMSuggestionSelect" valueState="{oCreateFormModel>/unitOfMeasureValueState}" valueStateText="{oCreateFormModel>/unitOfMeasureValueStateText}" liveChange=".onFieldLiveChange">
+                            <suggestionColumns>
+                                <Column hAlign="Begin" width="5rem">
+                                    <Label text="Unit Code"/>
+                                </Column>
+                                <Column hAlign="Begin" minScreenWidth="Tablet" demandPopin="true">
+                                    <Label text="Description"/>
+                                </Column>
+                            </suggestionColumns>
+                            <suggestionRows>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{UnitCode}"/>
+                                        <Text text="{Text}"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </suggestionRows>
+                        </Input>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Lead Time (Days)" required="true" />
+                        <Input type="Number" value="{oCreateFormModel>/leadTime}" placeholder="Enter lead time in days" width="100%" valueState="{oCreateFormModel>/leadTimeValueState}" valueStateText="{oCreateFormModel>/leadTimeValueStateText}" liveChange=".onFieldLiveChange"/>
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Part Number (Optional)" />
+                        <Input value="{oCreateFormModel>/partNumber}" placeholder="Enter part number" width="100%" />
+                    </VBox>
+
+                    <VBox class="sapUiTinyMarginBottom">
+                        <Label text="Additional Link" required="true" />
+                        <Input value="{oCreateFormModel>/additionalLink}" placeholder="Enter product URL" width="100%" valueState="{oCreateFormModel>/additionalLinkValueState}" valueStateText="{oCreateFormModel>/additionalLinkValueStateText}" liveChange=".onFieldLiveChange"/>
+                    </VBox>
+                </l:Grid>
+
+                <VBox class="sapUiTinyMarginBottom">
+                    <Label text="Product Description" required="true" />
+                    <TextArea value="{oCreateFormModel>/productDescription}" rows="3" width="100%" maxLength="500" placeholder="Enter detailed product description" valueState="{oCreateFormModel>/productDescriptionValueState}" valueStateText="{oCreateFormModel>/productDescriptionValueStateText}"/>
+                </VBox>
+
+                <!-- Product Image Section -->
+                <VBox class="sapUiTinyMarginBottom">
+                    <Label text="Product Image" required="true" />
+                    <MessageStrip text="JPEG, PNG, max 5MB" type="Information" showIcon="true" class="sapUiTinyMarginBottom" />
+                    <HBox alignItems="Center">
+                        <u:FileUploader id="productImageUploader" buttonText="Browse" fileType="jpg,png,jpeg" maximumFileSize="5" placeholder="Drag and drop image file" style="Emphasized" width="250px" change="onImageFileChange" valueState="{oCreateFormModel>/productImageValueState}" valueStateText="{oCreateFormModel>/productImageValueStateText}" fileSizeExceed="onFileSizeExceeded"/>
+                        <Button id="previewImageButton" text="Preview" icon="sap-icon://picture" type="Transparent" press="onPreviewImage" enabled="false" class="sapUiSmallMarginBegin" />
+                        <Button id="removeImageButton" icon="sap-icon://sys-cancel" type="Transparent" press="onRemoveImage" enabled="{= !!${oCreateFormModel>/selectedImageFile}}" tooltip="Remove Image" />
+                    </HBox>
+                    <Text id="imageFileName" text="" class="sapUiTinyMarginTop" />
+                </VBox>
+
+                <!-- Product Specification Section -->
+                <VBox class="sapUiTinyMarginBottom">
+                    <Label text="Product Specification (PDF)" required="true" />
+                    <MessageStrip text="PDF, max 5MB" type="Information" showIcon="true" class="sapUiTinyMarginBottom" />
+                    <HBox alignItems="Center">
+                        <u:FileUploader id="productSpecUploader" buttonText="Browse" fileType="pdf" maximumFileSize="5" placeholder="Drag and drop PDF file" style="Emphasized" width="250px" change="onPdfFileChange" valueState="{oCreateFormModel>/productSpecificationValueState}" valueStateText="{oCreateFormModel>/productSpecificationValueStateText}" fileSizeExceed="onFileSizeExceeded"/>
+                        <Button id="previewPdfButton" text="Preview" icon="sap-icon://pdf-attachment" type="Transparent" press="onPreviewPdf" enabled="false" class="sapUiSmallMarginBegin" />
+                        <Button id="removePdfButton" icon="sap-icon://sys-cancel" type="Transparent" press="onRemovePdf" enabled="{= !!${oCreateFormModel>/selectedPdfFile}}" tooltip="Remove PDF" />
+                    </HBox>
+                    <Text id="pdfFileName" text="" class="sapUiTinyMarginTop" />
+                </VBox>
+            </VBox>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <!-- <Button type="Reject" text="Cancel" press="onCancelDialog" /> -->
+                    <ToolbarSpacer />
+                    <!-- <Button type="Default" text="Items in Catalog: {catalog>/catalogItems/length}" press="_navigateToCatalogReview" class="sapUiTinyMarginEnd" /> -->
+                    <Button type="Reject" text="Cancel" press="onCancelCatalog" />
+                    <Button type="Emphasized" text="Add to Catalog &amp; View" press="onCreateCatalog" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

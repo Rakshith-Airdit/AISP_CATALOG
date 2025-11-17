@@ -23,7 +23,6 @@ sap.ui.define(
         // Create LocalStorage model for catalog items
         const oCatalogModel = new LocalStorageModel("PRODUCT_CATALOG_STORAGE", {
           catalogItems: [],
-          selectedProduct: null,
         });
 
         this.setModel(oCatalogModel, "catalog");

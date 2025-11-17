@@ -4,21 +4,15 @@
     xmlns:core="sap.ui.core"
     xmlns:ui="sap.ui.table">
 
-    <ValueHelpDialog id="commodityValueHelp" title="Select Commodity Code" afterClose=".onCommodityVHAfterClose" supportMultiselect="false" key="Commodity" descriptionKey="CommodityName" ok=".onCommodityVHOk" cancel=".onCommodityVHCancel">
+    <ValueHelpDialog id="commodityValueHelp" title="Select Commodity Code" afterClose=".onCommodityVHAfterClose" supportMultiselect="false" key="Commodity" descriptionKey="CommodityName" ok=".onCommodityVHOk" cancel=".onCommodityVHCancel" contentWidth="800px" contentHeight="800px" verticalScrolling="false" horizontalScrolling="false">
 
         <filterBar>
             <fb:FilterBar useToolbar="false" advancedMode="false" search=".onCommodityVHSearch" isRunningInValueHelpDialog="true" showFilterConfiguration="false" showRestoreButton="false">
 
                 <fb:filterGroupItems>
-                    <fb:FilterGroupItem groupName="basic" name="Commodity" label="Commodity Code" visibleInFilterBar="true">
+                    <fb:FilterGroupItem groupName="basic" name="search" label="Search Commodity Code or Description" visibleInFilterBar="true">
                         <fb:control>
-                            <m:Input value="{filters>/Commodity}" placeholder="Enter Commodity Code" />
-                        </fb:control>
-                    </fb:FilterGroupItem>
-
-                    <fb:FilterGroupItem groupName="basic" name="CommodityName" label="Description" visibleInFilterBar="true">
-                        <fb:control>
-                            <m:Input value="{filters>/CommodityName}" placeholder="Enter Description" />
+                            <m:Input value="{filters>/search}" placeholder="Enter Commodity Code or Description" liveChange=".onCommodityVHLiveChange"/>
                         </fb:control>
                     </fb:FilterGroupItem>
                 </fb:filterGroupItems>

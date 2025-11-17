@@ -3,21 +3,14 @@
     xmlns:fb="sap.ui.comp.filterbar"
     xmlns:core="sap.ui.core">
 
-    <ValueHelpDialog id="currencyValueHelp" title="Select Currency" ok=".onCurrencyVHOk" cancel=".onCurrencyVHCancel" supportMultiselect="false" key="WAERS" descriptionKey="LTEXT">
+    <ValueHelpDialog id="currencyValueHelp" title="Select Currency" afterClose=".onCurrencyVHAfterClose" supportMultiselect="false" key="WAERS" descriptionKey="LTEXT" ok=".onCurrencyVHOk" cancel=".onCurrencyVHCancel" contentWidth="800px" contentHeight="800px" verticalScrolling="false" horizontalScrolling="false">
 
         <filterBar>
-            <fb:FilterBar useToolbar="false" advancedMode="false" search=".onCurrencyVHSearch" isRunningInValueHelpDialog="true" showFilterConfiguration="false" showRestoreButton="false" showClearButton="true">
-
+            <fb:FilterBar useToolbar="false" advancedMode="false" search=".onCurrencyVHSearch" isRunningInValueHelpDialog="true" showFilterConfiguration="false" showRestoreButton="false" >
                 <fb:filterGroupItems>
-                    <fb:FilterGroupItem groupName="basic" name="WAERS" label="Currency" visibleInFilterBar="true">
+                    <fb:FilterGroupItem groupName="basic" name="search" label="Search Currency Code or Description" visibleInFilterBar="true">
                         <fb:control>
-                            <m:Input value="{/filters/WAERS}" placeholder="Enter Currency Code" />
-                        </fb:control>
-                    </fb:FilterGroupItem>
-
-                    <fb:FilterGroupItem groupName="basic" name="LTEXT" label="Description" visibleInFilterBar="true">
-                        <fb:control>
-                            <m:Input value="{/filters/LTEXT}" placeholder="Enter Currency Description" />
+                            <m:Input value="{filters>/search}" placeholder="Enter Currency Code or Description" liveChange=".onCurrencyVHLiveChange"/>
                         </fb:control>
                     </fb:FilterGroupItem>
                 </fb:filterGroupItems>

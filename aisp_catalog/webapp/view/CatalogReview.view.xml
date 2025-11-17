@@ -3,9 +3,17 @@
     xmlns="sap.m"
     xmlns:f="sap.f"
     xmlns:core="sap.ui.core" displayBlock="true">
-    <Page id="catalogReviewPage" title="Added Products ({= ${catalog>/items}.length })" showNavButton="true" navButtonPress=".onNavigateBack">
+    <!-- title="Draft ({= ${catalog>/items}.length })" -->
+    <Page id="catalogReviewPage">
+        <customHeader>
+            <Toolbar>
+                <VBox alignItems="Start" justifyContent="Start" width="100%" class="sapUiSmallMargin">
+                    <Title text="Draft ({= ${catalog>/items}.length })" />
+                    <Text text="Submit to Save" />
+                </VBox>
+            </Toolbar>
+        </customHeader>
         <content>
-
             <VBox>
                 <!-- Products List as Panels -->
                 <List id="entryList" items="{

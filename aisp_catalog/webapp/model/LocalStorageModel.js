@@ -35,14 +35,12 @@ sap.ui.define(
             // Initialize with default data if parsing fails
             this.setData({
               catalogItems: [],
-              selectedProduct: null,
             });
           }
         } else {
           // Initialize with default data if no stored data
           this.setData({
             catalogItems: [],
-            selectedProduct: null,
           });
         }
         this._bDataLoaded = true;
@@ -75,7 +73,6 @@ sap.ui.define(
       clearData: function () {
         this.setData({
           catalogItems: [],
-          selectedProduct: null,
         });
         this._storeData();
       },
@@ -99,17 +96,6 @@ sap.ui.define(
           (item) => item.id !== sItemId && item.DraftId !== sItemId
         );
         this.setProperty("/catalogItems", aUpdatedItems);
-
-        // Clear selection if the selected item was removed
-        const oSelectedProduct = this.getProperty("/selectedProduct");
-        if (oSelectedProduct && oSelectedProduct.id === sItemId) {
-          this.setProperty("/selectedProduct", null);
-        }
-      },
-
-      // Set selected product
-      setSelectedProduct: function (oProduct) {
-        this.setProperty("/selectedProduct", oProduct);
       },
     });
   }

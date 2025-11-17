@@ -41,13 +41,8 @@ sap.ui.define(
          * Sets the flexible column layout to one, two, or three columns.
          * @param {string} sColumns the target amount of columns
          */
-        _setLayout: function (sColumns) {
-          if (sColumns) {
-            this.getModel("appView").setProperty(
-              "/layout",
-              sColumns + "Column" + (sColumns === "One" ? "" : "sMidExpanded")
-            );
-          }
+        _setLayout: function (sColumnLayout) {
+          this.getModel("appView").setProperty("/layout", sColumnLayout);
         },
 
         /**
