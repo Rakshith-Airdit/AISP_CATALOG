@@ -46,9 +46,23 @@ modules:
       - comcatalogaispcatalog.zip
       name: comcatalogaispcatalog
       target-path: resources/
+    - artifacts:
+      - comaispbuyercatalogaispbuyercatalog.zip
+      name: comaispbuyercatalogaispbuyercatalog
+      target-path: resources/
 - name: comcatalogaispcatalog
   type: html5
   path: aisp_catalog
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: comaispbuyercatalogaispbuyercatalog
+  type: html5
+  path: aisp_buyer_catalog
   build-parameters:
     build-result: dist
     builder: custom

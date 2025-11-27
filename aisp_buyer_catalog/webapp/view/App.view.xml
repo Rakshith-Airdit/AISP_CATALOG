@@ -1,0 +1,36 @@
+<mvc:View controllerName="com.aisp.buyercatalog.aispbuyercatalog.controller.App" displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    xmlns:tnt="sap.tnt">
+    <App id="app">
+        <Page>
+            <customHeader>
+                <tnt:ToolHeader id="shellLikeToolHeaderOnlyMandatoryControls" width="100%">
+                    <Image src="test-resources/sap/tnt/images/SAP_Logo.png" decorative="false" press="onLogoPressed" tooltip="SAP Logo" width="60px" height="30px">
+                        <layoutData>
+                            <OverflowToolbarLayoutData priority="NeverOverflow"/>
+                        </layoutData>
+                    </Image>
+                    <Title text="Product Catalog Management - Buyer" wrapping="false">
+                        <layoutData>
+                            <OverflowToolbarLayoutData priority="Disappear"/>
+                        </layoutData>
+                    </Title>
+                    <ToolbarSpacer />
+                    <!-- Cart Button with Badge -->
+                    <Button id="cartButton" type="Emphasized" icon="sap-icon://cart" badgeStyle="Default" visible="{= ${cartModel>/totalItems} > 0 }" class="sapUiTinyMarginEnd" text="Cart" press="onPressCart">
+                        <customData>
+                            <BadgeCustomData key="badge" value="{cartModel>/totalItems}"></BadgeCustomData>
+                        </customData>
+                    </Button>
+                </tnt:ToolHeader>
+            </customHeader>
+            <content>
+                <f:FlexibleColumnLayout id="layout" busy="{appView>/busy}" busyIndicatorDelay="{appView>/delay}" layout="{appView>/layout}" backgroundDesign="Translucent" class="sapUiDemoCart" stateChange=".onStateChange">
+                </f:FlexibleColumnLayout>
+            </content>
+        </Page>
+    </App>
+</mvc:View>

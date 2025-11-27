@@ -1,0 +1,145 @@
+<mvc:View controllerName="com.aisp.buyercatalog.aispbuyercatalog.controller.Product"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true" height="100%">
+
+    <Page>
+        <content>
+            <l:VerticalLayout class="sapUiContentPadding" width="100%">
+
+                <VBox >                    <!-- Title (Product Name) -->
+                    <Title text="{productModel>/ProductName}" level="H3" class="sapUiSmallMarginBottom" wrapping="true" textAlign="Begin" width="100%"/>
+
+                    <!-- Subtitle / Short Description (optional – you can bind or hardcode) -->
+                    <Text text="Ergonomic design wireless mouse with precision tracking and long battery life" class="sapUiTinyMarginBottom sapMText sapMTextMaxWidth" wrapping="true" textAlign="Begin"/>
+                </VBox>
+
+                <!-- Top Section: Centered Image + Details Below -->
+                <VBox width="100%" alignItems="Center">
+
+                    <!-- Centered Clickable Image with LightBox -->
+                    <Image src="{productModel>/ProductImage}" alt="{i18n>comparisonAlternativeImageText}" densityAware="false" width="380px" height="380px" class="sapUiMediumMarginBottom" visible="{= !!${productModel>/ProductImage}}">
+
+                        <detailBox>
+                            <LightBox>
+                                <imageContent>
+                                    <LightBoxItem imageSrc="{productModel>/ProductImage}" title="{productModel>/ProductName}" />
+                                </imageContent>
+                            </LightBox>
+                        </detailBox>
+                    </Image>
+
+
+
+                    <!-- Key Information Cards – Replaces Price, Lead Time, Stock & Supplier in a modern tile layout -->
+                    <FlexBox wrap="Wrap" justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTopBottom" width="100%">
+
+                        <!-- Price Card -->
+                        <GenericTile class="sapUiTinyMargin tileLayout" header="Price" frameType="OneByHalf" backgroundImage="sap-icon://wallet">
+                            <TileContent>
+                                <NumericContent value="314.90" scale="USD" valueColor="Good" withMargin="false" class="sapUiSmallMarginBottom"/>
+                            </TileContent>
+                        </GenericTile>
+
+                        <!-- Lead Time Card -->
+                        <GenericTile class="sapUiTinyMargin tileLayout" header="Delivery Time" frameType="OneByHalf" backgroundImage="sap-icon://shipping-status">
+                            <TileContent>
+                                <NumericContent value="2-5" scale="business days" valueColor="Good" icon="sap-icon://shipping-status" withMargin="false"/>
+                            </TileContent>
+                        </GenericTile>
+
+                        <!-- Stock Card -->
+                        <GenericTile class="sapUiTinyMargin tileLayout" header="Availability" frameType="OneByHalf" backgroundImage="sap-icon://inbox">
+                            <TileContent>
+                                <NumericContent value="500" scale="units in stock" valueColor="Good" icon="sap-icon://accept" withMargin="false"/>
+                            </TileContent>
+                        </GenericTile>
+
+                    </FlexBox>
+
+                </VBox>
+
+                <!-- ==================== PRODUCT DETAILS – 2 COLUMNS WITHOUT ANY FORM/TABLE ==================== -->
+                <VBox class="sapUiMediumMarginTopBottom">
+                    <Title text="Product Details" level="H5" class="sapUiSmallMarginBottom"/>
+
+                    <HBox justifyContent="SpaceBetween">
+                        <!-- Left Column -->
+                        <VBox width="48%">
+                            <HBox class="sapUiSmallMarginBottom">
+                                <Label text="Commodity Code" class="sapUiTinyMarginEnd" width="10rem" design="Bold"/>
+                                <Text text="MOUSE-ERG"/>
+                            </HBox>
+                            <HBox class="sapUiSmallMarginBottom">
+                                <Label text="Family" class="sapUiTinyMarginEnd" width="10rem" design="Bold"/>
+                                <Text text="Office Equipment"/>
+                            </HBox>
+                            <HBox>
+                                <Label text="Product Group" class="sapUiTinyMarginEnd" width="10rem" design="Bold"/>
+                                <Text text="Standard Supplies"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Right Column -->
+                        <VBox width="48%">
+                            <HBox class="sapUiSmallMarginBottom">
+                                <Label text="Commodity Name" class="sapUiTinyMarginEnd" width="10rem" design="Bold"/>
+                                <Text text="Computer Peripherals"/>
+                            </HBox>
+                            <HBox>
+                                <Label text="Segment" class="sapUiTinyMarginEnd" width="10rem" design="Bold"/>
+                                <Text text="Electronics"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- ==================== SPECIFICATIONS – 2 COLUMNS WITHOUT TABLE ==================== -->
+                <VBox class="sapUiMediumMarginTopBottom">
+                    <Title text="Specifications" level="H5" class="sapUiSmallMarginBottom"/>
+
+                    <HBox justifyContent="SpaceBetween">
+                        <!-- Left Column -->
+                        <VBox width="48%">
+                            <HBox class="sapUiSmallMarginBottom">
+                                <Label text="Connection" width="10rem" design="Bold" class="sapUiTinyMarginEnd"/>
+                                <Text text="Wireless 2.4GHz"/>
+                            </HBox>
+                            <HBox class="sapUiSmallMarginBottom">
+                                <Label text="DPI" width="10rem" design="Bold" class="sapUiTinyMarginEnd"/>
+                                <Text text="800-3200"/>
+                            </HBox>
+                            <HBox class="sapUiSmallMarginBottom">
+                                <Label text="Battery Life" width="10rem" design="Bold" class="sapUiTinyMarginEnd"/>
+                                <Text text="18 months"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Right Column -->
+                        <VBox width="48%">
+                            <HBox class="sapUiSmallMarginBottom">
+                                <Label text="Buttons" width="10rem" design="Bold" class="sapUiTinyMarginEnd"/>
+                                <Text text="6"/>
+                            </HBox>
+                            <HBox>
+                                <Label text="Compatibility" width="10rem" design="Bold" class="sapUiTinyMarginEnd"/>
+                                <Text text="Windows, Mac, Linux"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </l:VerticalLayout>
+        </content>
+
+        <!-- Full-width Add to Cart Button fixed at bottom -->
+        <footer>
+            <Bar design="Footer">
+                <contentMiddle>
+                    <Button text="Add to Cart" type="Emphasized" icon="sap-icon://cart" width="100%" press="onAddToCart"/>
+                </contentMiddle>
+            </Bar>
+        </footer>
+    </Page>
+</mvc:View>

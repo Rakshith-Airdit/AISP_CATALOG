@@ -1,0 +1,194 @@
+<mvc:View controllerName="com.aisp.buyercatalog.aispbuyercatalog.controller.CatalogList"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+    xmlns:f="sap.f"
+    xmlns:grid="sap.ui.layout.cssgrid"
+    xmlns:core="sap.ui.core" height="100%" displayBlock="true">
+
+    <Page title="Product Catalog" showHeader="true">
+
+        <smartFilterBar:SmartFilterBar id="smartFilterBar" entitySet="ProductCatalogItems" persistencyKey="SmartFilter_Explored" considerAnalyticalParameters="true" initialized=".onSmartFilterBarInitialized" showRestoreButton="true" useToolbar="false" visible="true" showFilterConfiguration="false" search=".onSearch">
+            <smartFilterBar:controlConfiguration>
+                <!-- <smartFilterBar:ControlConfiguration key="Supplier_Acc_Grp" index="1" label="Supplier Account Group" visibleInAdvancedArea="true" filterType="single" />
+                <smartFilterBar:ControlConfiguration key="Supplier_Name" index="2" label="Specific Supplier" visibleInAdvancedArea="true" filterType="single"/>
+                <smartFilterBar:ControlConfiguration key="Family_Name" index="6" label="Family Name" visibleInAdvancedArea="true" filterType="single"/>
+                <smartFilterBar:ControlConfiguration key="Segment_Name" index="7" label="Segment Name" visibleInAdvancedArea="true" filterType="single"/>
+                <smartFilterBar:ControlConfiguration key="Product_Description" index="8" label="Product Description" visibleInAdvancedArea="true" filterType="single"/>
+                <smartFilterBar:ControlConfiguration key="Search_Term" index="9" label="Search Term" visibleInAdvancedArea="true" filterType="single"/> -->
+
+                <!-- <smartFilterBar:ControlConfiguration key="ProductName" index="3" label="Product Name" visibleInAdvancedArea="true">
+                    <smartFilterBar:customControl>
+                        <MultiInput id="productNameInput" valueHelpRequest=".onProductNameValueHelp" showValueHelp="true" tokenUpdate=".onFilterTokenUpdate" />
+                    </smartFilterBar:customControl>
+                </smartFilterBar:ControlConfiguration>
+                <smartFilterBar:ControlConfiguration key="CommodityCode" index="4" label="Commodity Code" visibleInAdvancedArea="true">
+                    <smartFilterBar:customControl>
+                        <MultiInput id="commodityCodeInput" valueHelpRequest=".onCommodityCodeValueHelp" showValueHelp="true" tokenUpdate=".onFilterTokenUpdate" />
+                    </smartFilterBar:customControl>
+                </smartFilterBar:ControlConfiguration>
+                <smartFilterBar:ControlConfiguration key="Category" index="5" label="Commodity Name" visibleInAdvancedArea="true">
+                    <smartFilterBar:customControl>
+                        <MultiInput id="commodityNameInput" valueHelpRequest=".onCommodityNameValueHelp" showValueHelp="true" tokenUpdate=".onFilterTokenUpdate" />
+                    </smartFilterBar:customControl>
+                </smartFilterBar:ControlConfiguration> -->
+            </smartFilterBar:controlConfiguration>
+        </smartFilterBar:SmartFilterBar>
+
+        <content>
+            <!-- Common Toolbar -->
+            <OverflowToolbar>
+                <Title text="Catalog Items"/>
+                <ToolbarSpacer />
+                <SegmentedButton id="viewSwitchButton" selectedKey="grid" selectionChange=".onViewChange">
+                    <items>
+                        <SegmentedButtonItem icon="sap-icon://grid" text="Grid View" key="grid" />
+                        <SegmentedButtonItem icon="sap-icon://table-view" text="Table View" key="table" />
+                    </items>
+                </SegmentedButton>
+            </OverflowToolbar>
+
+            <NavContainer id="catalogNavContainer" width="100%" height="100%" class="sapUiResponsiveContentPadding">
+
+                <!-- Grid List Page -->
+                <Page id="gridPage" showHeader="false" showSubHeader="false">
+                    <content>
+                        <f:GridList id="gridList" items="{
+                            path: 'oProductsModel>/products',
+                            sorter: {
+                                path: 'isFavorite', 
+                                descending: true,
+                                group: false
+                            }
+                        }" mode="MultiSelect" class="customGridList" itemPress="onListItemPress">
+
+                            <!-- Removed header toolbar with filter/sort buttons -->
+
+                            <!-- Responsive layout -->
+                            <f:customLayout>
+                                <grid:GridBoxLayout boxMinWidth="20rem"/>
+                            </f:customLayout>
+
+                            <f:GridListItem class="productListItem" type="Active">
+                                <VBox class="myProductCard sapUiSmallMargin" backgroundDesign="Transparent">
+                                    <!-- Image with overlay elements -->
+                                    <VBox class="imageContainer">
+                                        <RatingIndicator class="favoriteButton" maxValue="1" value="{= ${oProductsModel>isFavorite} ? 1 : 0 }" tooltip="{= ${oProductsModel>isFavorite} ? 'Remove from Favorites' : 'Add to Favorites' }" change=".onToggleFavorite" />
+
+                                        <Image src="{oProductsModel>ProductImage}" width="100%" height="200px" class="myProductCardImg" densityAware="false" decorative="false"/>
+
+                                        <Text text="{oProductsModel>Category}" class="imageTag"/>
+                                    </VBox>
+
+                                    <VBox class="sapUiSmallMarginBeginEnd">
+                                        <Title text="{oProductsModel>ProductName}" wrapping="true"/>
+                                        <Text text="{oProductsModel>ProductDescription}" class="sapUiTinyMarginTop" maxLines="1" wrapping="false"/>
+                                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiTinyMarginTop">
+                                            <!-- endIcon="sap-icon://inspect" -->
+                                            <Link text="View Details" href="{oProductsModel>AdditionalLink}" endIcon="sap-icon://chain-link" target="_blank"/>
+                                            <ObjectStatus text="Available" state="Indication14" inverted="true"/>
+                                        </HBox>
+
+                                        <ObjectNumber class="sapUiSmallMarginBottom sapMObjectNumberLarge" number="{
+                                        parts: [
+                                            {path: 'oProductsModel>UnitPrice'},
+                                            {path: 'oProductsModel>CurrencyCode'}
+                                        ],
+                                        type: 'sap.ui.model.type.Currency',
+                                        formatOptions: {showMeasure: false}
+                                    }" unit="{oProductsModel>CurrencyCode}"/>
+
+                                        <Text text="Lead time: {oProductsModel>LeadTimeDays} business days"/>
+                                    </VBox>
+
+
+                                    <HBox class="sapUiSmallMargin" width="100%" fitContainer="true">
+                                        <Button class="sapUiTinyMarginBeginEnd" text="Add to Cart" type="Emphasized" width="95%" icon="sap-icon://cart" press="onAddToCart">
+                                            <layoutData>
+                                                <FlexItemData growFactor="8" />
+                                            </layoutData>
+                                        </Button>
+
+                                        <Button class="sapUiTinyMarginBeginEnd" type="Default" icon="sap-icon://email" tooltip="Contact Supplier" press="onPressSendEmail">
+                                            <layoutData>
+                                                <FlexItemData growFactor="2" />
+                                            </layoutData>
+                                        </Button>
+                                    </HBox>
+                                </VBox>
+                            </f:GridListItem>
+                        </f:GridList>
+                    </content>
+                </Page>
+
+                <!-- Table View Page -->
+                <Page id="tablePage" showHeader="false" showSubHeader="false">
+                    <content>
+                        <Table id="productsTable" items="{
+                            path: 'oProductsModel>/products',
+                            sorter: {
+                                path: 'isFavorite', 
+                                descending: true,
+                                group: false
+                            }
+                        }" growing="true" growingThreshold="20" sticky="ColumnHeaders" mode="MultiSelect">
+
+                            <!-- Removed header toolbar with filter/sort/export buttons -->
+
+                            <columns>
+                                <Column width="6rem" hAlign="Center">
+                                </Column>
+                                <Column width="14rem">
+                                    <Text text="Product" />
+                                </Column>
+                                <Column minScreenWidth="Tablet" demandPopin="true" width="16rem">
+                                    <Text text="Description" />
+                                </Column>
+                                <Column width="8rem">
+                                    <Text text="Link" />
+                                </Column>
+                                <Column width="8rem" hAlign="Center">
+                                    <Text text="Category" />
+                                </Column>
+                                <Column width="8rem" hAlign="End">
+                                    <Text text="Price" />
+                                </Column>
+                                <Column width="7rem" hAlign="Center">
+                                    <Text text="Lead Time" />
+                                </Column>
+                                <Column width="9rem" hAlign="Center">
+                                    <Text text="Actions" />
+                                </Column>
+                            </columns>
+
+                            <items>
+                                <ColumnListItem type="Navigation" press="onColumnListItemPress">
+                                    <cells>
+                                        <RatingIndicator maxValue="1" value="{= ${oProductsModel>isFavorite} ? 1 : 0 }" change=".onToggleFavorite" class="sapUiTinyMarginTopBottom" />
+                                        <ObjectIdentifier title="{oProductsModel>ProductName}" text="{oProductsModel>PartNumber}"/>
+                                        <Text text="{oProductsModel>ProductDescription}" wrapping="true"/>
+                                        <Link text="View Details" href="{oProductsModel>AdditionalLink}" endIcon="sap-icon://chain-link" target="_blank"/>
+                                        <Text text="{oProductsModel>Category}" />
+                                        <ObjectNumber class="sapUiSmallMarginBottom" number="{
+                                        parts: [
+                                            {path: 'oProductsModel>UnitPrice'},
+                                            {path: 'oProductsModel>CurrencyCode'}
+                                        ],
+                                        type: 'sap.ui.model.type.Currency',
+                                        formatOptions: {showMeasure: false}
+                                    }" unit="{oProductsModel>CurrencyCode}"/>
+                                        <Text text="{oProductsModel>LeadTimeDays} days"/>
+                                        <HBox justifyContent="Center">
+                                            <Button icon="sap-icon://cart" type="Transparent" tooltip="Add to Cart" press=".onAddToCart" />
+                                            <Button icon="sap-icon://email" type="Transparent" tooltip="Send Product Request Email" press=".onPressSendEmail" class="sapUiTinyMarginBegin" />
+                                        </HBox>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </content>
+                </Page>
+            </NavContainer>
+        </content>
+    </Page>
+</mvc:View>

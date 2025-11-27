@@ -1,0 +1,73 @@
+/* Enter your custom styles here */
+html,
+body {
+  overflow-y: hidden;
+}
+
+.myProductCard {
+  border-radius: 1rem;
+}
+
+.myProductCardImg {
+  border-top-right-radius: 1rem;
+  border-top-left-radius: 1rem;
+}
+
+/* Target ONLY GridLists with custom class */
+.customGridList .sapFGLIToolbar {
+  background: transparent !important;
+  border: none !important;
+  position: absolute !important;
+  top: 0.5rem !important;
+  left: 0.5rem !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: 1000 !important;
+}
+
+.customGridList .sapFGLIToolbarSpacer {
+  display: none !important;
+}
+
+.customGridList .sapFGLIToolbar .sapMCb {
+  display: block !important;
+}
+
+.customGridList .sapUiSizeCompact .sapMCbBg {
+  top: 2rem !important;
+  left: 2rem !important;
+}
+
+.imageContainer {
+  position: relative;
+}
+
+.favoriteButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.selectionCheckbox {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  border-radius: 0.25rem;
+  z-index: 1;
+}
+
+.imageTag {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  background: #0070f0;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+}

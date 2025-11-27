@@ -80,6 +80,61 @@
         "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
         "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/AISP_CATALOG/aisp_catalog\"}"
       }
-    }
-  ]
-}
+    },
+    {
+        "name": "Start aisp_buyer_catalog",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/aisp_buyer_catalog",
+        "runtimeExecutable": "npx",
+        "windows": {
+            "runtimeExecutable": "npx.cmd"
+        },
+        "runtimeArgs": [
+            "fiori",
+            "run"
+        ],
+        "args": [
+            "--open",
+            "test/flp.html#app-preview"
+        ],
+        "console": "internalConsole",
+        "internalConsoleOptions": "openOnSessionStart",
+        "outputCapture": "std",
+        "env": {
+            "DEBUG": "--inspect",
+            "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+            "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/AISP_CATALOG/aisp_buyer_catalog\"}"
+        }
+    },
+    {
+        "name": "Start aisp_buyer_catalog Local",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/aisp_buyer_catalog",
+        "runtimeExecutable": "npx",
+        "windows": {
+            "runtimeExecutable": "npx.cmd"
+        },
+        "runtimeArgs": [
+            "fiori",
+            "run"
+        ],
+        "args": [
+            "--config",
+            "./ui5-local.yaml",
+            "--open",
+            "test/flp.html#app-preview"
+        ],
+        "console": "internalConsole",
+        "internalConsoleOptions": "openOnSessionStart",
+        "outputCapture": "std",
+        "env": {
+            "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+            "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/AISP_CATALOG/aisp_buyer_catalog\"}"
+        }
+    },
+    {
+        "name": "Start aisp_buyer_catalog Mock",
+        "type": "node",
+   

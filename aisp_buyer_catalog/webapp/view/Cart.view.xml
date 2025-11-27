@@ -1,0 +1,150 @@
+<mvc:View controllerName="com.aisp.buyercatalog.aispbuyercatalog.controller.Cart"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout"
+    xmlns:plugins="sap.m.plugins"
+    xmlns:columnmenu="sap.m.table.columnmenu" displayBlock="true" height="100%">
+
+    <Page title="My Cart" showNavButton="true" navButtonPress=".onNavBack">
+        <subHeader>
+            <Bar>
+                <contentLeft>
+                    <Title text="{= ${cartModel>/totalItems} || 0 } items in cart" level="H5" textAlign="Begin"/>
+                </contentLeft>
+            </Bar>
+        </subHeader>
+
+        <content>
+            <l:VerticalLayout width="100%" class="sapUiContentPadding">
+
+                <!-- Cart Items Table - Made Responsive -->
+                <Table id="cartTable" items="{cartModel>/items}" growing="true" growingThreshold="5" sticky="ColumnHeaders,HeaderToolbar" autoPopinMode="true" popinLayout="GridSmall" fixedLayout="Strict" class="sapUiTinyMarginBottom">
+
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Cart Items ({cartModel>/totalItems})"/>
+                            <ToolbarSpacer/>
+                            <Button icon="sap-icon://delete" text="Clear Cart" press=".onClearCart"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+
+                    <columns>
+                        <Column width="25%" demandPopin="true" minScreenWidth="Tablet" popinDisplay="WithoutHeader">
+                            <Text text="Product"/>
+                        </Column>
+                        <Column width="20%" demandPopin="true" minScreenWidth="Tablet" popinDisplay="WithoutHeader">
+                            <Text text="Description"/>
+                        </Column>
+                        <Column width="15%" hAlign="Center" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="Category"/>
+                        </Column>
+                        <Column width="12%" hAlign="End" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="Unit Price"/>
+                        </Column>
+                        <Column width="13%" hAlign="Center" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="Quantity"/>
+                        </Column>
+                        <Column width="10%" hAlign="End" demandPopin="true" minScreenWidth="Tablet">
+                            <Text text="Total Price"/>
+                        </Column>
+                        <Column width="5%" hAlign="End" demandPopin="true" minScreenWidth="Tablet">
+                        </Column>
+                    </columns>
+
+                    <items>
+                        <ColumnListItem vAlign="Middle">
+                            <cells>
+                                <!-- Product Name & Image -->
+                                <VBox>
+                                    <HBox alignItems="Center">
+                                        <Image src="{cartModel>ProductImage}" width="3rem" height="3rem" class="sapUiTinyMarginEnd" densityAware="false"/>
+                                        <VBox>
+                                            <Title text="{cartModel>ProductName}" level="H6" class="sapUiTinyMarginBottom"/>
+                                            <Text text="{= 'Lead Time: ' + ${cartModel>LeadTimeDays} + ' days' }" class="sapUiTinyMarginBottom"/>
+                                        </VBox>
+                                    </HBox>
+                                </VBox>
+
+                                <!-- Product Description -->
+                                <Text text="{cartModel>ProductDescription}" wrapping="true" maxLines="2"/>
+
+                                <!-- Category -->
+                                <ObjectStatus text="{cartModel>Category}" state="Information"/>
+
+                                <!-- Unit Price -->
+                                <ObjectNumber number="{
+                                        parts: [
+                                            {path: 'cartModel>UnitPrice'},
+                                            {path: 'cartModel>CurrencyCode'}
+                                        ],
+                                        type: 'sap.ui.model.type.Currency',
+                                        formatOptions: {showMeasure: false}
+                                    }" unit="{cartModel>CurrencyCode}" state="Success"/>
+
+                                <StepInput value="{cartModel>quantity}" min="1" step="1" width="90px" class="sapUiTinyMarginEnd" change=".onUpdateQuantity"/>
+
+                                <!-- Total Price -->
+                                <ObjectNumber number="{
+                                        parts: [
+                                            {path: 'cartModel>totalPrice'},
+                                            {path: 'cartModel>CurrencyCode'}
+                                        ],
+                                        type: 'sap.ui.model.type.Currency',
+                                        formatOptions: {showMeasure: false}
+                                    }" unit="{cartModel>CurrencyCode}" emphasized="true" state="Success"/>
+
+                                <Button icon="sap-icon://delete" type="Reject" tooltip="Remove item" press=".onRemoveItem" />
+
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <!-- Order Summary - Clean VBox Layout -->
+                <VBox class="sapUiMediumMarginTop sapUiSmallPadding">
+                    <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginBottom">
+                        <Title text="Order Summary" level="H2"/>
+                        <ObjectStatus text="{= ${cartModel>/totalItems} || 0 } items" state="Success"/>
+                    </HBox>
+
+                    <VBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTopBottom">
+                            <Text text="Subtotal"/>
+                            <ObjectNumber number="{
+                    parts: [
+                        {path: 'cartModel>/totalPrice'},
+                        {path: 'cartModel>/currency'}
+                    ],
+                    type: 'sap.ui.model.type.Currency',
+                    formatOptions: {showMeasure: false}
+                }" unit="{cartModel>/currency}"/>
+                        </HBox>
+
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTopBottom">
+                            <Text text="Items"/>
+                            <Text text="{cartModel>/totalItems}"/>
+                        </HBox>
+
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTop">
+                            <Title text="Total Amount" level="H3" class="sapThemeBase-textColor"/>
+                            <ObjectNumber number="{
+                    parts: [
+                        {path: 'cartModel>/totalPrice'},
+                        {path: 'cartModel>/currency'}
+                    ],
+                    type: 'sap.ui.model.type.Currency',
+                    formatOptions: {showMeasure: false}
+                }" unit="{cartModel>/currency}" emphasized="true" state="Success" class="sapMObjectNumberLarge"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Send Product Request Button -->
+                <Button text="Send Product Request via Email" type="Emphasized" icon="sap-icon://email" width="100%" class="sapUiMediumMarginTop" press=".onSendRequest" enabled="{= ${cartModel>/totalItems} > 0 }"/>
+
+            </l:VerticalLayout>
+        </content>
+    </Page>
+</mvc:View>
