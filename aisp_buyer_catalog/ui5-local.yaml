@@ -30,9 +30,10 @@ server:
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /odata
-            url: https://airdit-software-services-private-limite-airdit-190920236a7746bd.cfapps.ap10.hana.ondemand.com
+          - url: https://airdit-software-services-private-limite-airdit-190920236a7746bd.cfapps.ap10.hana.ondemand.com
+            authenticationType: NoAuthentication
             destination: AISP_PO_ASN
+            path: /odata
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

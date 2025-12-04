@@ -183,7 +183,7 @@ sap.ui.define(
           });
 
           const payload = {
-            "receiver": "vibebap807@moondyal.com",
+            "receiver": "rakshith@airditsoftware.com",
             "SupplierName": "Test Supplier",
             "BuyerCompanyName": "Company XYZ",
             "BuyerName": "Test Buyer",

@@ -1,0 +1,109 @@
+<!-- SendEmailDialog.fragment.xml -->
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:l="sap.ui.layout"
+    xmlns:uxap="sap.uxap">
+
+    <Dialog id="idSendEmailDialog" title="Send Product Request" contentWidth="500px" resizable="true" draggable="true">
+
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <!-- Product Header -->
+                <Panel expandable="false" width="auto">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="{oEmailModel>/ProductName}" level="H2"/>
+                            <ToolbarSpacer/>
+                            <ObjectStatus text="{oEmailModel>/PartNumber}" state="Information"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+
+                    <content>
+                        <f:SimpleForm editable="false" layout="ResponsiveGridLayout" singleContainerFullSize="false" columnsL="1" columnsM="1" labelSpanL="4" labelSpanM="4">
+                            <f:content>
+                                <!-- Product Details -->
+                                <Label text="Description"/>
+                                <Text text="{oEmailModel>/ProductDescription}" wrapping="true" class="sapUiTinyMarginBottom"/>
+
+                                <Label text="Commodity Code"/>
+                                <Text text="{oEmailModel>/CommodityCode}" class="sapUiTinyMarginBottom"/>
+
+                                <Label text="Unit Price"/>
+                                <ObjectNumber number="{
+                                        parts: [
+                                            {path: 'oEmailModel>/UnitPrice'},
+                                            {path: 'oEmailModel>/CurrencyCode'}
+                                        ],
+                                        type: 'sap.ui.model.type.Currency',
+                                        formatOptions: {showMeasure: false}
+                                    }" unit="{oEmailModel>/CurrencyCode}" state="Success" emphasized="true"/>
+
+                                <!-- Quantity Input -->
+                                <Label text="Quantity *" required="true"/>
+                                <HBox alignItems="Center">
+                                    <StepInput id="quantityStepInput" value="{oEmailModel>/quantity}" min="1" max="1000" step="1" width="120px" valueState="{oEmailModel>/quantityState}" valueStateText="Quantity must be at least 1" change="onQuantityChange"/>
+                                    <Text text="{oEmailModel>/UnitOfMeasure}" class="sapUiTinyMarginBegin"/>
+                                </HBox>
+
+                                <!-- Total Price Display -->
+                                <Label text="Total Price"/>
+                                <HBox alignItems="Center">
+                                    <ObjectNumber number="{
+                                            parts: [
+                                                {path: 'oEmailModel>/totalPrice'},
+                                                {path: 'oEmailModel>/CurrencyCode'}
+                                            ],
+                                            type: 'sap.ui.model.type.Currency',
+                                            formatOptions: {showMeasure: false}
+                                        }" unit="{oEmailModel>/CurrencyCode}" state="Success" emphasized="true" class="sapUiTinyMarginEnd"/>
+                                    <Text text="{= ${oEmailModel>/quantity} * ${oEmailModel>/UnitPrice} } {oEmailModel>/CurrencyCode}" visible="false"/>
+                                </HBox>
+                            </f:content>
+                        </f:SimpleForm>
+                    </content>
+                </Panel>
+
+                <!-- Quantity Section -->
+                <Panel headerText="Order Details" width="auto" class="sapUiSmallMarginTop" visible="{= ${oEmailModel>/quantity} > 0 }">
+                    <content>
+                        <!-- Summary Card -->
+                        <VBox class="sapUiSmallMarginTop sapUiTinyMarginBeginEnd">
+                            <HBox justifyContent="SpaceBetween">
+                                <Text text="Unit Price:" class="sapUiTinyMarginEnd"/>
+                                <ObjectNumber number="{oEmailModel>/UnitPrice}" unit="{oEmailModel>/CurrencyCode}"/>
+                            </HBox>
+                            <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginTop">
+                                <Text text="× {oEmailModel>/quantity} {oEmailModel>/UnitOfMeasure}" class="sapUiTinyMarginEnd"/>
+                                <Text text="= {oEmailModel>/quantity} × {oEmailModel>/UnitPrice} {oEmailModel>/CurrencyCode}"/>
+                            </HBox>
+                            <HBox justifyContent="SpaceBetween">
+                                <Text text="Total:" class="sapMObjectNumberLarge sapUiTinyMarginEnd"/>
+                                <ObjectNumber number="{oEmailModel>/totalPrice}" unit="{oEmailModel>/CurrencyCode}" state="Success" emphasized="true" class="sapMObjectNumberLarge"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Panel>
+            </VBox>
+        </content>
+
+        <beginButton>
+            <Button id="sendEmailButton" text="Send Request" type="Emphasized" icon="sap-icon://email" press="onSendEmailConfirm" enabled="{= ${oEmailModel>/quantity} > 0 }" tooltip="Send product request email"/>
+        </beginButton>
+
+        <endButton>
+            <Button text="Cancel" press="onDialogCancel" tooltip="Close without sending"/>
+        </endButton>
+
+        <customHeader>
+            <Bar>
+                <contentLeft>
+                    <core:Icon src="sap-icon://product" class="sapUiTinyMarginBegin"/>
+                </contentLeft>
+                <contentMiddle>
+                    <Title text="Send Product Request"/>
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+    </Dialog>
+</core:FragmentDefinition>

@@ -13,7 +13,9 @@
         <Schema Namespace="CatalogBuyerService" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
             <EntityContainer Name="EntityContainer" m:IsDefaultEntityContainer="true">
                 <EntitySet Name="ProductCatalogItems" EntityType="CatalogBuyerService.ProductCatalogItems"/>
+                <EntitySet Name="ProductCatalogCommodityCodes" EntityType="CatalogBuyerService.ProductCatalogCommodityCodes"/>
                 <EntitySet Name="BuyerFavorites" EntityType="CatalogBuyerService.BuyerFavorites"/>
+                <EntitySet Name="DistinctProductNames" EntityType="CatalogBuyerService.DistinctProductNames"/>
                 <FunctionImport Name="addToFavorites" ReturnType="CatalogBuyerService.return_CatalogBuyerService_addToFavorites" m:HttpMethod="POST">
                     <Parameter Name="productId" Type="Edm.String" Mode="In" Nullable="true"/>
                 </FunctionImport>
@@ -22,6 +24,15 @@
                 </FunctionImport>
                 <FunctionImport Name="toggleFavorite" ReturnType="CatalogBuyerService.return_CatalogBuyerService_toggleFavorite" m:HttpMethod="POST">
                     <Parameter Name="productId" Type="Edm.String" Mode="In" Nullable="true"/>
+                </FunctionImport>
+                <FunctionImport Name="triggerProductRequestEmail" ReturnType="CatalogBuyerService.return_CatalogBuyerService_triggerProductRequestEmail" m:HttpMethod="POST">
+                    <Parameter Name="receiver" Type="Edm.String" Mode="In" sap:Label="Receiver Email" sap:quickinfo="The receiver of the information" Nullable="true"/>
+                    <Parameter Name="SupplierName" Type="Edm.String" Mode="In" sap:Label="Supplier Name" sap:quickinfo="Name of the supplier" Nullable="true"/>
+                    <Parameter Name="BuyerCompanyName" Type="Edm.String" Mode="In" sap:Label="Buyer Company Name" sap:quickinfo="Name of the buyer company" Nullable="true"/>
+                    <Parameter Name="BuyerName" Type="Edm.String" Mode="In" sap:Label="Buyer Name" sap:quickinfo="Name of the buyer" Nullable="true"/>
+                    <Parameter Name="BuyerContactInfo" Type="Edm.String" Mode="In" sap:Label="Buyer Contact Information" sap:quickinfo="Contact details of the buyer" Nullable="true"/>
+                    <Parameter Name="BuyerEmailAddress" Type="Edm.String" Mode="In" sap:Label="Buyer Email Address" sap:quickinfo="Email address of the buyer" Nullable="true"/>
+                    <Parameter Name="Products" Type="Collection(CatalogBuyerService.ProductData)" Nullable="false" Mode="In"/>
                 </FunctionImport>
                 <AssociationSet Name="BuyerFavorites_Product" Association="CatalogBuyerService.BuyerFavorites_Product">
                     <End Role="BuyerFavorites" EntitySet="BuyerFavorites"/>
@@ -55,6 +66,14 @@
                 <Property Name="SupplierId" Type="Edm.String" sap:Label="Supplier ID" sap:quickinfo="Identifier of the supplier who created this product"/>
                 <Property Name="isFavorite" Type="Edm.Boolean" sap:Label="Is Favorite" sap:quickinfo="Indicates if the current user has favorited this product"/>
             </EntityType>
+            <EntityType Name="ProductCatalogCommodityCodes">
+                <Key>
+                    <PropertyRef Name="Commodity"/>
+                </Key>
+                <Property Name="Commodity" Type="Edm.Int32" Nullable="false" sap:label="Commodity Code" sap:quickinfo="UNSPSC commodity code"/>
+                <Property Name="CommodityName" Type="Edm.String" MaxLength="100" sap:label="Description" sap:quickinfo="Commodity code description"/>
+                <Property Name="NumberOfProducts" Type="Edm.Int32" sap:label="Number of Products" sap:quickinfo="Total number of products in this category"/>
+            </EntityType>
             <EntityType Name="BuyerFavorites" m:HasStream="true">
                 <Key>
                     <PropertyRef Name="ID"/>
@@ -68,6 +87,24 @@
                 <Property Name="BuyerId" Type="Edm.String" sap:Label="Buyer ID" sap:quickinfo="Identifier of the buyer who favorited the product"/>
                 <NavigationProperty Name="Product" Relationship="CatalogBuyerService.BuyerFavorites_Product" FromRole="BuyerFavorites" ToRole="ProductCatalogItems" sap:Label="Product" sap:quickinfo="Reference to the favorited product"/>
             </EntityType>
+            <EntityType Name="DistinctProductNames">
+                <Key>
+                    <PropertyRef Name="ProductId"/>
+                </Key>
+                <Property Name="ProductId" Type="Edm.String" Nullable="false"/>
+                <Property Name="ProductName" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <ComplexType Name="ProductData">
+                <Property Name="ProductName" Type="Edm.String" sap:Label="Product Name" sap:quickinfo="Name of the product"/>
+                <Property Name="ProductDescription" Type="Edm.String" sap:Label="Product Description" sap:quickinfo="Description of the product"/>
+                <Property Name="UnitOfMeasure" Type="Edm.String" sap:Label="Unit of Measure" sap:quickinfo="Unit of measurement for the product"/>
+                <Property Name="UnitPrice" Type="Edm.Decimal" Precision="15" Scale="2" sap:Label="Unit Price" sap:quickinfo="Price per unit of the product"/>
+                <Property Name="PartNo" Type="Edm.String" sap:Label="Part Number" sap:quickinfo="Part number for the product"/>
+                <Property Name="CommodityCode" Type="Edm.String" sap:Label="Commodity Code" sap:quickinfo="Code representing the commodity"/>
+                <Property Name="CurrencyCode" Type="Edm.String" sap:Label="Currency Code" sap:quickinfo="Currency for the product price"/>
+                <Property Name="quantity" Type="Edm.Int32" sap:Label="Quantity" sap:quickinfo="Quantity of the product"/>
+                <Property Name="totalPrice" Type="Edm.Decimal" Precision="15" Scale="2" sap:Label="Total Price" sap:quickinfo="Total price for the product"/>
+            </ComplexType>
             <ComplexType Name="return_CatalogBuyerService_addToFavorites">
                 <Property Name="success" Type="Edm.Boolean"/>
                 <Property Name="message" Type="Edm.String"/>
@@ -81,6 +118,11 @@
                 <Property Name="success" Type="Edm.Boolean"/>
                 <Property Name="isFavorite" Type="Edm.Boolean"/>
                 <Property Name="message" Type="Edm.String"/>
+            </ComplexType>
+            <ComplexType Name="return_CatalogBuyerService_triggerProductRequestEmail">
+                <Property Name="message" Type="Edm.String"/>
+                <Property Name="queue_id" Type="Edm.String"/>
+                <Property Name="event" Type="Edm.String"/>
             </ComplexType>
             <Association Name="BuyerFavorites_Product">
                 <End Role="BuyerFavorites" Type="CatalogBuyerService.BuyerFavorites" Multiplicity="*"/>

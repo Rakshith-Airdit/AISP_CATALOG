@@ -26,7 +26,7 @@
             <Annotations Target="SAP.ProductCatalogItems/ProductName">
                 <Annotation Term="Common.ValueList">
                     <Record Type="Common.ValueListType">
-                        <PropertyValue Property="CollectionPath" String="ProductCatalogItems"/>
+                        <PropertyValue Property="CollectionPath" String="DistinctProductNames"/>
                         <PropertyValue Property="SearchSupported" Bool="true"/>
                         <PropertyValue Property="Parameters">
                             <Collection>
@@ -43,13 +43,13 @@
             <Annotations Target="SAP.ProductCatalogItems/CommodityCode">
                 <Annotation Term="Common.ValueList">
                     <Record Type="Common.ValueListType">
-                        <PropertyValue Property="CollectionPath" String="ProductCatalogItems"/>
+                        <PropertyValue Property="CollectionPath" String="ProductCatalogCommodityCodes"/>
                         <PropertyValue Property="SearchSupported" Bool="true"/>
                         <PropertyValue Property="Parameters">
                             <Collection>
                                 <Record Type="Common.ValueListParameterInOut">
                                     <PropertyValue Property="LocalDataProperty" PropertyPath="CommodityCode"/>
-                                    <PropertyValue Property="ValueListProperty" String="CommodityCode"/>
+                                    <PropertyValue Property="ValueListProperty" String="Commodity"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>
@@ -60,13 +60,13 @@
             <Annotations Target="SAP.ProductCatalogItems/Category">
                 <Annotation Term="Common.ValueList">
                     <Record Type="Common.ValueListType">
-                        <PropertyValue Property="CollectionPath" String="ProductCatalogItems"/>
+                        <PropertyValue Property="CollectionPath" String="ProductCatalogCommodityCodes"/>
                         <PropertyValue Property="SearchSupported" Bool="true"/>
                         <PropertyValue Property="Parameters">
                             <Collection>
                                 <Record Type="Common.ValueListParameterInOut">
                                     <PropertyValue Property="LocalDataProperty" PropertyPath="Category"/>
-                                    <PropertyValue Property="ValueListProperty" String="Category"/>
+                                    <PropertyValue Property="ValueListProperty" String="CommodityName"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>

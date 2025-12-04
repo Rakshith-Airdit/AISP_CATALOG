@@ -5,9 +5,7 @@
     xmlns:f="sap.f"
     xmlns:grid="sap.ui.layout.cssgrid"
     xmlns:core="sap.ui.core" height="100%" displayBlock="true">
-
     <Page title="Product Catalog" showHeader="true">
-
         <smartFilterBar:SmartFilterBar id="smartFilterBar" entitySet="ProductCatalogItems" persistencyKey="SmartFilter_Explored" considerAnalyticalParameters="true" initialized=".onSmartFilterBarInitialized" showRestoreButton="true" useToolbar="false" visible="true" showFilterConfiguration="false" search=".onSearch">
             <smartFilterBar:controlConfiguration>
                 <!-- <smartFilterBar:ControlConfiguration key="Supplier_Acc_Grp" index="1" label="Supplier Account Group" visibleInAdvancedArea="true" filterType="single" />
@@ -38,7 +36,7 @@
         <content>
             <!-- Common Toolbar -->
             <OverflowToolbar>
-                <Title text="Catalog Items"/>
+                <Title text="Catalog Items" />
                 <ToolbarSpacer />
                 <SegmentedButton id="viewSwitchButton" selectedKey="grid" selectionChange=".onViewChange">
                     <items>
@@ -49,7 +47,6 @@
             </OverflowToolbar>
 
             <NavContainer id="catalogNavContainer" width="100%" height="100%" class="sapUiResponsiveContentPadding">
-
                 <!-- Grid List Page -->
                 <Page id="gridPage" showHeader="false" showSubHeader="false">
                     <content>
@@ -60,33 +57,43 @@
                                 descending: true,
                                 group: false
                             }
-                        }" mode="MultiSelect" class="customGridList" itemPress="onListItemPress">
-
+                        }" mode="None" class="customGridList" itemPress="onListItemPress" showNoData="false" width="100%">
+                            <!-- MultiSelect For Checkbox -->
                             <!-- Removed header toolbar with filter/sort buttons -->
+                            <f:noData>
+                                <!-- Illustrated Message that takes full available height -->
+                                <VBox height="100%" width="100%" justifyContent="Center" alignItems="Center" visible="{= !${oProductsModel>/products/length}}">
+                                    <IllustratedMessage id="noDataMessage" title="No Data Available" illustrationType="sapIllus-NoData" illustrationSize="Auto" />
+                                </VBox>
+                            </f:noData>
 
                             <!-- Responsive layout -->
                             <f:customLayout>
-                                <grid:GridBoxLayout boxMinWidth="20rem"/>
+                                <!-- <grid:GridBoxLayout boxMinWidth="20rem" /> -->
+                                <grid:ResponsiveColumnLayout />
                             </f:customLayout>
 
                             <f:GridListItem class="productListItem" type="Active">
+                                <f:layoutData>
+                                    <grid:ResponsiveColumnItemLayoutData columns="4" rows="4" />
+                                </f:layoutData>
                                 <VBox class="myProductCard sapUiSmallMargin" backgroundDesign="Transparent">
                                     <!-- Image with overlay elements -->
                                     <VBox class="imageContainer">
                                         <RatingIndicator class="favoriteButton" maxValue="1" value="{= ${oProductsModel>isFavorite} ? 1 : 0 }" tooltip="{= ${oProductsModel>isFavorite} ? 'Remove from Favorites' : 'Add to Favorites' }" change=".onToggleFavorite" />
 
-                                        <Image src="{oProductsModel>ProductImage}" width="100%" height="200px" class="myProductCardImg" densityAware="false" decorative="false"/>
+                                        <Image src="{oProductsModel>ProductImage}" width="100%" height="200px" class="myProductCardImg" densityAware="false" decorative="false" />
 
-                                        <Text text="{oProductsModel>Category}" class="imageTag"/>
+                                        <Text text="{oProductsModel>Category}" class="imageTag" />
                                     </VBox>
 
                                     <VBox class="sapUiSmallMarginBeginEnd">
-                                        <Title text="{oProductsModel>ProductName}" wrapping="true"/>
-                                        <Text text="{oProductsModel>ProductDescription}" class="sapUiTinyMarginTop" maxLines="1" wrapping="false"/>
+                                        <Title text="{oProductsModel>ProductName}" wrapping="true" />
+                                        <Text text="{oProductsModel>ProductDescription}" class="sapUiTinyMarginTop" maxLines="1" wrapping="false" />
                                         <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiTinyMarginTop">
                                             <!-- endIcon="sap-icon://inspect" -->
-                                            <Link text="View Details" href="{oProductsModel>AdditionalLink}" endIcon="sap-icon://chain-link" target="_blank"/>
-                                            <ObjectStatus text="Available" state="Indication14" inverted="true"/>
+                                            <Link text="View Details" href="{oProductsModel>AdditionalLink}" endIcon="sap-icon://chain-link" target="_blank" />
+                                            <ObjectStatus text="Available" state="Indication14" inverted="true" />
                                         </HBox>
 
                                         <ObjectNumber class="sapUiSmallMarginBottom sapMObjectNumberLarge" number="{
@@ -96,11 +103,10 @@
                                         ],
                                         type: 'sap.ui.model.type.Currency',
                                         formatOptions: {showMeasure: false}
-                                    }" unit="{oProductsModel>CurrencyCode}"/>
+                                    }" unit="{oProductsModel>CurrencyCode}" />
 
-                                        <Text text="Lead time: {oProductsModel>LeadTimeDays} business days"/>
+                                        <Text text="Lead time: {oProductsModel>LeadTimeDays} business days" />
                                     </VBox>
-
 
                                     <HBox class="sapUiSmallMargin" width="100%" fitContainer="true">
                                         <Button class="sapUiTinyMarginBeginEnd" text="Add to Cart" type="Emphasized" width="95%" icon="sap-icon://cart" press="onAddToCart">
@@ -132,12 +138,10 @@
                                 group: false
                             }
                         }" growing="true" growingThreshold="20" sticky="ColumnHeaders" mode="MultiSelect">
-
                             <!-- Removed header toolbar with filter/sort/export buttons -->
 
                             <columns>
-                                <Column width="6rem" hAlign="Center">
-                                </Column>
+                                <Column width="6rem" hAlign="Center" />
                                 <Column width="14rem">
                                     <Text text="Product" />
                                 </Column>
@@ -165,9 +169,9 @@
                                 <ColumnListItem type="Navigation" press="onColumnListItemPress">
                                     <cells>
                                         <RatingIndicator maxValue="1" value="{= ${oProductsModel>isFavorite} ? 1 : 0 }" change=".onToggleFavorite" class="sapUiTinyMarginTopBottom" />
-                                        <ObjectIdentifier title="{oProductsModel>ProductName}" text="{oProductsModel>PartNumber}"/>
-                                        <Text text="{oProductsModel>ProductDescription}" wrapping="true"/>
-                                        <Link text="View Details" href="{oProductsModel>AdditionalLink}" endIcon="sap-icon://chain-link" target="_blank"/>
+                                        <ObjectIdentifier title="{oProductsModel>ProductName}" text="{oProductsModel>PartNumber}" />
+                                        <Text text="{oProductsModel>ProductDescription}" wrapping="true" />
+                                        <Link text="View Details" href="{oProductsModel>AdditionalLink}" endIcon="sap-icon://chain-link" target="_blank" />
                                         <Text text="{oProductsModel>Category}" />
                                         <ObjectNumber class="sapUiSmallMarginBottom" number="{
                                         parts: [
@@ -176,8 +180,8 @@
                                         ],
                                         type: 'sap.ui.model.type.Currency',
                                         formatOptions: {showMeasure: false}
-                                    }" unit="{oProductsModel>CurrencyCode}"/>
-                                        <Text text="{oProductsModel>LeadTimeDays} days"/>
+                                    }" unit="{oProductsModel>CurrencyCode}" />
+                                        <Text text="{oProductsModel>LeadTimeDays} days" />
                                         <HBox justifyContent="Center">
                                             <Button icon="sap-icon://cart" type="Transparent" tooltip="Add to Cart" press=".onAddToCart" />
                                             <Button icon="sap-icon://email" type="Transparent" tooltip="Send Product Request Email" press=".onPressSendEmail" class="sapUiTinyMarginBegin" />

@@ -5,17 +5,36 @@ sap.ui.define(
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/m/MessageBox",
+    "sap/ui/core/Fragment",
   ],
-  (Controller, JSONModel, Filter, FilterOperator, MessageBox) => {
+  (Controller, JSONModel, Filter, FilterOperator, MessageBox, Fragment) => {
     "use strict";
 
     return Controller.extend(
       "com.aisp.buyercatalog.aispbuyercatalog.controller.CatalogList",
-      {
+      {        
         onInit() {
           const oProductsData = new JSONModel({
             products: [],
           });
+
+          var oSelectedProduct = new JSONModel({
+            ProductName: "",
+            PartNumber: "",
+            ProductDescription: "",
+            CommodityCode: "",
+            UnitPrice: 0,
+            CurrencyCode: "INR",
+            UnitOfMeasure: "EA",
+            quantity: 1,
+            totalPrice: 0,
+            quantityState: "None"
+          });
+
+          this._oEmailDialog = null;
+          this._currentProduct = null;
+
+          this.getView().setModel(oSelectedProduct, "oEmailModel");
 
           this.getView().setModel(oProductsData, "oProductsModel");
 
@@ -204,13 +223,83 @@ sap.ui.define(
           }
         },
 
-        onPressSendEmail: function (oEvent) {
+        onPressSendEmail: async function (oEvent) {
           const oSource = oEvent.getSource();
-          const oContext = oSource.getBindingContext("oProductsModel")
+          const oContext = oSource.getBindingContext("oProductsModel");
           const oProduct = oContext.getObject();
 
+          // Store the product for later use
+          this._currentProduct = oProduct;
+
+          // Update dialog model with product info
+          const oDialogModel = this.getView().getModel("oEmailModel");
+
+          oDialogModel.setData({
+            ProductName: oProduct.ProductName || "",
+            PartNumber: oProduct.PartNumber || "",
+            ProductDescription: oProduct.ProductDescription || "",
+            UnitPrice: parseFloat(oProduct.UnitPrice) || 0,
+            CurrencyCode: oProduct.CurrencyCode || "USD",
+            CommodityCode: oProduct.CommodityCode?.toString() || "",
+            ProductDescription: oProduct.ProductDescription || "",
+            UnitOfMeasure: oProduct.UnitOfMeasure || "EA",
+            quantity: 1,
+            totalPrice: parseFloat(oProduct.UnitPrice) || 0,
+            quantityState: "None"
+          });
+
+          // Create or open dialog using Fragment.load
+          if (!this._oEmailDialog) {
+            this._oEmailDialog = await Fragment.load({
+              id: this.getView().getId(),
+              name: "com.aisp.buyercatalog.aispbuyercatalog.view.fragments.SendEmailDialog",
+              controller: this
+            });
+
+            this.getView().addDependent(this._oEmailDialog);
+          }
+
+          this._oEmailDialog.open();
+          this._oEmailDialog.open();
+        },
+
+        onQuantityChange: function (oEvent) {
+          const sValue = oEvent.getSource().getValue();
+          const oDialogModel = this.getView().getModel("oEmailModel");
+
+          // Validate quantity
+          const iQuantity = parseInt(sValue);
+          let sQuantityState = "None";
+
+          if (!sValue || isNaN(iQuantity) || iQuantity < 1) {
+            sQuantityState = "Error";
+          } else {
+            // Update total price
+            const fUnitPrice = parseFloat(oDialogModel.getProperty("/UnitPrice")) || 0;
+            const fTotalPrice = fUnitPrice * iQuantity;
+
+            oDialogModel.setProperty("/quantity", iQuantity);
+            oDialogModel.setProperty("/totalPrice", fTotalPrice);
+          }
+
+          oDialogModel.setProperty("/quantityState", sQuantityState);
+        },
+
+        onSendEmailConfirm: function () {
+          const oDialogModel = this.getView().getModel("oEmailModel");
+          const oProduct = this._currentProduct;
+
+          // Validate quantity one more time
+          const iQuantity = parseInt(oDialogModel.getProperty("/quantity"));
+
+          if (!iQuantity || iQuantity < 1) {
+            MessageBox.error("Please enter a valid quantity");
+            return;
+          }
+
+          // Prepare payload
           const oPayload = {
-            "receiver": "vibebap807@moondyal.com",
+            "receiver": "rakshith@airditsoftware.com",
             "SupplierName": "Test Supplier",
             "BuyerCompanyName": "Company XYZ",
             "BuyerName": "Test Buyer",
@@ -224,12 +313,39 @@ sap.ui.define(
               "PartNo": oProduct.PartNumber,
               "CommodityCode": oProduct.CommodityCode?.toString(),
               "CurrencyCode": oProduct.CurrencyCode,
-              "quantity": oProduct.quantity || 1,
-              "totalPrice": parseFloat(oProduct.UnitPrice) * (oProduct.quantity || 1)
+              "quantity": iQuantity,
+              "totalPrice": parseFloat(oProduct.UnitPrice) * iQuantity
             }]
-          }
+          };
 
+          // Close dialog first
+          this._oEmailDialog.close();
+
+          // Show loading indicator
+          this.getView().setBusy(true);
+
+          // Send email
           this.sendEmailRequest(oPayload);
+        },
+
+        onDialogCancel: function () {
+          this._oEmailDialog.close();
+          this._currentProduct = null;
+
+          // Reset dialog model
+          const oDialogModel = this.getView().getModel("oEmailModel");
+          oDialogModel.setData({
+            ProductName: "",
+            ProductDescription: "",
+            PartNumber: "",
+            UnitPrice: 0,
+            CommodityCode: "",
+            CurrencyCode: "INR",
+            UnitOfMeasure: "EA",
+            quantity: 1,
+            totalPrice: 0,
+            quantityState: "None"
+          });
         },
 
         sendEmailRequest: function (oPayload) {

@@ -1,153 +1,153 @@
 {
-    "_version": "1.76.0",
-    "sap.app": {
-        "id": "com.aisp.buyercatalog.aispbuyercatalog",
-        "type": "application",
-        "i18n": "i18n/i18n.properties",
-        "applicationVersion": {
-            "version": "0.0.1"
-        },
-        "title": "{{appTitle}}",
-        "description": "{{appDescription}}",
-        "resources": "resources.json",
-        "sourceTemplate": {
-            "id": "@sap/generator-fiori:basic",
-            "version": "1.19.5",
-            "toolsId": "e383b80e-515c-4296-88d1-6ad10baf2cea"
-        },
-        "dataSources": {
-            "mainService": {
-                "uri": "/odata/v2/catalog-buyer/",
-                "type": "OData",
-                "settings": {
-                    "annotations": [
-                        "annotation"
-                    ],
-                    "localUri": "localService/mainService/metadata.xml",
-                    "odataVersion": "2.0"
-                }
-            },
-            "annotation": {
-                "type": "ODataAnnotation",
-                "uri": "annotations/annotation.xml",
-                "settings": {
-                    "localUri": "annotations/annotation.xml"
-                }
-            }
-        }
+  "_version": "1.76.0",
+  "sap.app": {
+    "id": "com.aisp.buyercatalog.aispbuyercatalog",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
     },
-    "sap.ui": {
-        "technology": "UI5",
-        "icons": {
-            "icon": "",
-            "favIcon": "",
-            "phone": "",
-            "phone@2": "",
-            "tablet": "",
-            "tablet@2": ""
-        },
-        "deviceTypes": {
-            "desktop": true,
-            "tablet": true,
-            "phone": true
-        }
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.19.5",
+      "toolsId": "e383b80e-515c-4296-88d1-6ad10baf2cea"
     },
-    "sap.ui5": {
-        "flexEnabled": false,
-        "dependencies": {
-            "minUI5Version": "1.142.1",
-            "libs": {
-                "sap.m": {},
-                "sap.ui.core": {}
-            }
-        },
-        "contentDensities": {
-            "compact": true,
-            "cozy": true
-        },
-        "models": {
-            "i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "settings": {
-                    "bundleName": "com.aisp.buyercatalog.aispbuyercatalog.i18n.i18n"
-                }
-            },
-            "": {
-                "dataSource": "mainService",
-                "preload": true,
-                "settings": {}
-            }
-        },
-        "resources": {
-            "css": [
-                {
-                    "uri": "css/style.css"
-                }
-            ]
-        },
-        "routing": {
-            "config": {
-                "routerClass": "sap.f.routing.Router",
-                "controlAggregation": "midColumnPages",
-                "controlId": "layout",
-                "transition": "slide",
-                "type": "View",
-                "viewType": "XML",
-                "path": "com.aisp.buyercatalog.aispbuyercatalog.view",
-                "async": true,
-                "viewPath": "com.aisp.buyercatalog.aispbuyercatalog.view"
-            },
-            "routes": [
-                {
-                    "name": "RouteCatalogList",
-                    "pattern": "",
-                    "target": [
-                        "TargetCatalogList"
-                    ]
-                },
-                {
-                    "name": "RouteProduct",
-                    "pattern": "product/{productId}",
-                    "target": [
-                        "TargetCatalogList",
-                        "TargetProduct"
-                    ]
-                },
-                {
-                    "name": "RouteCart",
-                    "pattern": "cart",
-                    "target": [
-                        "TargetCart"
-                    ]
-                }
-            ],
-            "targets": {
-                "TargetCatalogList": {
-                    "id": "CatalogList",
-                    "name": "CatalogList",
-                    "controlAggregation": "beginColumnPages"
-                },
-                "TargetProduct": {
-                    "id": "Product",
-                    "name": "Product",
-                    "controlAggregation": "midColumnPages"
-                },
-                "TargetCart": {
-                    "id": "Cart",
-                    "name": "Cart",
-                    "controlAggregation": "beginColumnPages"
-                }
-            }
-        },
-        "rootView": {
-            "viewName": "com.aisp.buyercatalog.aispbuyercatalog.view.App",
-            "type": "XML",
-            "id": "App",
-            "async": true
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v2/catalog-buyer/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "annotation"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
         }
-    },
-    "sap.cloud": {
-        "public": true,
-        "service": "AISP_CATALOG"
+      },
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      }
     }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.142.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.aisp.buyercatalog.aispbuyercatalog.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {}
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.f.routing.Router",
+        "controlAggregation": "midColumnPages",
+        "controlId": "layout",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "com.aisp.buyercatalog.aispbuyercatalog.view",
+        "async": true,
+        "viewPath": "com.aisp.buyercatalog.aispbuyercatalog.view"
+      },
+      "routes": [
+        {
+          "name": "RouteCatalogList",
+          "pattern": "",
+          "target": [
+            "TargetCatalogList"
+          ]
+        },
+        {
+          "name": "RouteProduct",
+          "pattern": "product/{productId}",
+          "target": [
+            "TargetCatalogList",
+            "TargetProduct"
+          ]
+        },
+        {
+          "name": "RouteCart",
+          "pattern": "cart",
+          "target": [
+            "TargetCart"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetCatalogList": {
+          "id": "CatalogList",
+          "name": "CatalogList",
+          "controlAggregation": "beginColumnPages"
+        },
+        "TargetProduct": {
+          "id": "Product",
+          "name": "Product",
+          "controlAggregation": "midColumnPages"
+        },
+        "TargetCart": {
+          "id": "Cart",
+          "name": "Cart",
+          "controlAggregation": "beginColumnPages"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "com.aisp.buyercatalog.aispbuyercatalog.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "AISP_CATALOG"
+  }
 }
